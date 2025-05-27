@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { InlineWidget, useCalendlyEventListener } from "react-calendly";
 import {
   Box,
   TextField,
@@ -12,7 +11,6 @@ import {
 } from "@mui/material";
 import { useFormContext } from "../../context/FormContext";
 import { FormLabel } from "../../utils/formComponents";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { isValidEmail, isValidVerificationCode } from "../../utils/validation";
 
 const Step2 = () => {
@@ -21,79 +19,55 @@ const Step2 = () => {
   const { formData, updateFormData } = useFormContext();
 
   // Initialize local state with form context data
-  const [emailState, setEmailState] = useState({
-    value: formData.step2?.email || "",
-    isBlurred: false,
-  });
-
-  const [verificationState, setVerificationState] = useState({
+  const [formState, setFormState] = useState({
+    name: formData.step2?.name || "",
+    email: formData.step2?.email || "",
     code: formData.step2?.code || "",
-    isBlurred: false,
+    isBlurred: {
+      name: false,
+      email: false,
+      code: false,
+    },
     showVerification: formData.step2?.showVerification || false,
     verified: formData.step2?.verified || false,
   });
 
-  const [isScheduled, setIsScheduled] = useState(
-    formData.step2?.isScheduled || false
-  );
-
-  // Add Calendly event listener
-  useCalendlyEventListener({
-    onDateAndTimeSelected: () => {
-      console.log("Date and time selected");
-    },
-    onEventScheduled: (e) => {
-      console.log("Event scheduled:", e.data.payload);
-      setIsScheduled(true);
-    },
-  });
-
   // Update form context whenever states change
   useEffect(() => {
-    const isEmailValid = isValidEmail(emailState.value);
-    const isVerificationValid = verificationState.verified;
+    const isEmailValid = isValidEmail(formState.email);
+    const isNameValid = formState.name.trim().length > 0;
+    const isVerificationValid = formState.verified;
 
     updateFormData("step2", {
-      email: emailState.value,
-      code: verificationState.code,
-      showVerification: verificationState.showVerification,
-      verified: verificationState.verified,
-      isScheduled: isScheduled,
-      isValid: isEmailValid && isVerificationValid && isScheduled,
-      isComplete: isEmailValid && isVerificationValid && isScheduled,
+      name: formState.name,
+      email: formState.email,
+      code: formState.code,
+      showVerification: formState.showVerification,
+      verified: formState.verified,
+      isValid: isEmailValid && isNameValid && isVerificationValid,
+      isComplete: isEmailValid && isNameValid && isVerificationValid,
     });
-  }, [emailState, verificationState, isScheduled]);
+  }, [formState]);
 
-  const handleEmailChange = (e) => {
-    setEmailState((prev) => ({
+  const handleChange = (field) => (e) => {
+    setFormState((prev) => ({
       ...prev,
-      value: e.target.value,
+      [field]: e.target.value,
     }));
   };
 
-  const handleCodeChange = (e) => {
-    setVerificationState((prev) => ({
+  const handleBlur = (field) => () => {
+    setFormState((prev) => ({
       ...prev,
-      code: e.target.value,
-    }));
-  };
-
-  const handleEmailBlur = () => {
-    setEmailState((prev) => ({
-      ...prev,
-      isBlurred: true,
-    }));
-  };
-
-  const handleCodeBlur = () => {
-    setVerificationState((prev) => ({
-      ...prev,
-      isBlurred: true,
+      isBlurred: {
+        ...prev.isBlurred,
+        [field]: true,
+      },
     }));
   };
 
   const sendVerification = async () => {
-    setVerificationState((prev) => ({
+    setFormState((prev) => ({
       ...prev,
       showVerification: true,
     }));
@@ -101,81 +75,64 @@ const Step2 = () => {
   };
 
   const verifyCode = async () => {
-    setVerificationState((prev) => ({
+    setFormState((prev) => ({
       ...prev,
       verified: true,
     }));
   };
 
-  const handleReschedule = () => {
-    // Commenting out rescheduling functionality as it creates a new appointment instead of rescheduling
-    // setIsScheduled(false);
-  };
-
   // Validation logic
-  const hasEmailError = emailState.isBlurred && !isValidEmail(emailState.value);
+  const hasNameError = formState.isBlurred.name && !formState.name.trim();
+  const nameErrorMessage = hasNameError ? "Please enter your name" : "";
+
+  const hasEmailError =
+    formState.isBlurred.email && !isValidEmail(formState.email);
   const emailErrorMessage = hasEmailError
     ? "Please enter a valid email address"
     : "";
 
   const hasCodeError =
-    verificationState.isBlurred &&
-    !isValidVerificationCode(verificationState.code);
+    formState.isBlurred.code && !isValidVerificationCode(formState.code);
   const codeErrorMessage = hasCodeError
     ? "Please enter a valid 6-digit verification code"
     : "";
 
-  const renderAppointmentSuccess = () => (
-    <Paper elevation={0} sx={{ p: 3, maxWidth: 500, mx: "auto" }}>
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          gap: 2,
-        }}
-      >
-        <CheckCircleIcon sx={{ fontSize: 60, color: "success.main" }} />
-        <Typography variant="h6" color="success.main" align="center">
-          Appointment Scheduled Successfully!
-        </Typography>
-        <Typography variant="body1" align="center" color="text.secondary">
-          You have received a confirmation email with the meeting details.
-        </Typography>
-        {/* Commenting out reschedule button as it creates a new appointment instead of rescheduling
-        <Button 
-          variant="outlined" 
-          onClick={handleReschedule}
-          sx={{ mt: 2 }}
-        >
-          Reschedule Meeting
-        </Button>
-        */}
-      </Box>
-    </Paper>
-  );
-
   return (
     <Box>
       <Typography variant={isMobile ? "h6" : "h5"} gutterBottom sx={{ mb: 3 }}>
-        Schedule a Meeting
+        Contact Information
       </Typography>
 
-      {!verificationState.verified ? (
+      {!formState.verified ? (
         <Paper elevation={0} sx={{ p: 3, maxWidth: 500, mx: "auto" }}>
           <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
             <Typography variant="body1" color="text.secondary" gutterBottom>
-              Please enter your work email to schedule a meeting
+              Please enter your contact information to proceed
             </Typography>
+
+            <Box>
+              <FormLabel required>Full Name</FormLabel>
+              <TextField
+                fullWidth
+                value={formState.name}
+                onChange={handleChange("name")}
+                onBlur={handleBlur("name")}
+                size={isMobile ? "small" : "medium"}
+                variant="outlined"
+                placeholder="Enter your full name"
+                error={hasNameError}
+                helperText={nameErrorMessage}
+              />
+            </Box>
 
             <Box>
               <FormLabel required>Work Email</FormLabel>
               <TextField
                 fullWidth
                 type="email"
-                value={emailState.value}
-                onChange={handleEmailChange}
-                onBlur={handleEmailBlur}
+                value={formState.email}
+                onChange={handleChange("email")}
+                onBlur={handleBlur("email")}
                 size={isMobile ? "small" : "medium"}
                 variant="outlined"
                 placeholder="Enter your work email address"
@@ -188,14 +145,18 @@ const Step2 = () => {
               variant="contained"
               onClick={sendVerification}
               fullWidth
-              disabled={!emailState.value || !isValidEmail(emailState.value)}
+              disabled={
+                !formState.email ||
+                !isValidEmail(formState.email) ||
+                !formState.name.trim()
+              }
               sx={{ mt: 1 }}
             >
               Send Verification Code
             </Button>
 
-            {verificationState.showVerification && (
-              <Fade in={verificationState.showVerification}>
+            {formState.showVerification && (
+              <Fade in={formState.showVerification}>
                 <Box
                   sx={{
                     display: "flex",
@@ -213,9 +174,9 @@ const Step2 = () => {
                     <FormLabel required>Verification Code</FormLabel>
                     <TextField
                       fullWidth
-                      value={verificationState.code}
-                      onChange={handleCodeChange}
-                      onBlur={handleCodeBlur}
+                      value={formState.code}
+                      onChange={handleChange("code")}
+                      onBlur={handleBlur("code")}
                       size={isMobile ? "small" : "medium"}
                       variant="outlined"
                       placeholder="Enter the 6-digit code"
@@ -233,7 +194,7 @@ const Step2 = () => {
                     variant="contained"
                     onClick={verifyCode}
                     fullWidth
-                    disabled={!isValidVerificationCode(verificationState.code)}
+                    disabled={!isValidVerificationCode(formState.code)}
                   >
                     Verify & Continue
                   </Button>
@@ -242,18 +203,24 @@ const Step2 = () => {
             )}
           </Box>
         </Paper>
-      ) : isScheduled ? (
-        renderAppointmentSuccess()
       ) : (
-        <Box sx={{ height: "650px" }}>
-          <InlineWidget
-            url="https://calendly.com/topaccessories99/30min"
-            prefill={{
-              email: emailState.value,
+        <Paper elevation={0} sx={{ p: 3, maxWidth: 500, mx: "auto" }}>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              gap: 2,
             }}
-            styles={{ height: "100%" }}
-          />
-        </Box>
+          >
+            <Typography variant="h6" color="success.main" align="center">
+              Contact Information Verified!
+            </Typography>
+            <Typography variant="body1" align="center" color="text.secondary">
+              You can now proceed to the next step.
+            </Typography>
+          </Box>
+        </Paper>
       )}
     </Box>
   );

@@ -23,6 +23,7 @@ import Step2 from "../components/stepper/Step2";
 import Step3 from "../components/stepper/Step3";
 import Step4 from "../components/stepper/Step4";
 import Step5 from "../components/stepper/Step5";
+import Step6 from "../components/stepper/Step6";
 
 const steps = [
   "Welcome",
@@ -31,6 +32,7 @@ const steps = [
   "Market Analysis",
   "Growth Strategy",
   "Review & Submit",
+  "Schedule Consultation",
 ];
 
 const StepperContent = () => {
@@ -65,6 +67,8 @@ const StepperContent = () => {
         return formData.step4?.isValid || false;
       case 5:
         return formData.step5?.isValid || false;
+      case 6:
+        return formData.step6?.isValid || false;
       default:
         return false;
     }
@@ -84,6 +88,8 @@ const StepperContent = () => {
         return <Step4 />;
       case 5:
         return <Step5 />;
+      case 6:
+        return <Step6 />;
       default:
         return "Unknown step";
     }

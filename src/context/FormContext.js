@@ -19,6 +19,8 @@ export const FormProvider = ({ children }) => {
     step3: {},
     step4: {},
     step5: {},
+    step6: {},
+
   });
 
   const [isFormDirty, setIsFormDirty] = useState(false);
@@ -53,6 +55,8 @@ export const FormProvider = ({ children }) => {
       step3: {},
       step4: {},
       step5: {},
+      step6: {},
+
     });
     setIsFormDirty(false);
   };
