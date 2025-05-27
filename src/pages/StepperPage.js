@@ -27,11 +27,11 @@ import Step6 from "../components/stepper/Step6";
 
 const steps = [
   "Welcome",
-  "Business Information",
-  "Schedule a Meeting",
-  "Market Analysis",
-  "Growth Strategy",
-  "Review & Submit",
+  "Information",
+  "Contact",
+  "Business Overview",
+  "Automation",
+  "Review",
   "Schedule Consultation",
 ];
 
