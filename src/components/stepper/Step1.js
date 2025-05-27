@@ -9,6 +9,7 @@ import {
   useMediaQuery,
 } from "@mui/material";
 import { useFormContext } from "../../context/FormContext";
+import { FormLabel } from "../../utils/formComponents";
 
 // Industry options with frontend display and backend mapping
 const industryOptions = [
@@ -39,7 +40,7 @@ const Step1 = () => {
         ?.display || "",
   });
 
-  const [isTouched, setIsTouched] = useState(false);
+  const [isBlurred, setIsBlurred] = useState(false);
 
   // Update form context whenever selected industry changes
   useEffect(() => {
@@ -52,7 +53,6 @@ const Step1 = () => {
   }, [selectedIndustry]);
 
   const handleIndustryChange = (event) => {
-    setIsTouched(true);
     const selectedOption = industryOptions.find(
       (option) => option.display === event.target.value
     );
@@ -64,10 +64,10 @@ const Step1 = () => {
   };
 
   const handleBlur = () => {
-    setIsTouched(true);
+    setIsBlurred(true);
   };
 
-  const hasError = isTouched && !selectedIndustry.value;
+  const hasError = isBlurred && !selectedIndustry.value;
   const errorMessage = hasError ? "Please select an industry" : "";
 
   return (
@@ -76,25 +76,27 @@ const Step1 = () => {
         Business Information
       </Typography>
       <Grid container spacing={{ xs: 2, sm: 3 }}>
-        <TextField
-          required
-          fullWidth
-          select
-          label="What Industry are you in?"
-          variant="outlined"
-          size={isMobile ? "small" : "medium"}
-          value={selectedIndustry.display}
-          onChange={handleIndustryChange}
-          onBlur={handleBlur}
-          error={hasError}
-          helperText={errorMessage}
-        >
-          {industryOptions.map((option) => (
-            <MenuItem key={option.value} value={option.display}>
-              {option.display}
-            </MenuItem>
-          ))}
-        </TextField>
+        <Grid size={{ xs: 12, md: 6 }}>
+          <FormLabel required>What Industry are you in?</FormLabel>
+          <TextField
+            required
+            fullWidth
+            select
+            variant="outlined"
+            size={isMobile ? "small" : "medium"}
+            value={selectedIndustry.display}
+            onChange={handleIndustryChange}
+            onBlur={handleBlur}
+            error={hasError}
+            helperText={errorMessage}
+          >
+            {industryOptions.map((option) => (
+              <MenuItem key={option.value} value={option.display}>
+                {option.display}
+              </MenuItem>
+            ))}
+          </TextField>
+        </Grid>
       </Grid>
     </Box>
   );

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { InlineWidget } from "react-calendly";
+import { InlineWidget, useCalendlyEventListener } from "react-calendly";
 import {
   Box,
   TextField,
@@ -11,6 +11,9 @@ import {
   Fade,
 } from "@mui/material";
 import { useFormContext } from "../../context/FormContext";
+import { FormLabel } from "../../utils/formComponents";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import { isValidEmail, isValidVerificationCode } from "../../utils/validation";
 
 const Step2 = () => {
   const theme = useTheme();
@@ -20,19 +23,34 @@ const Step2 = () => {
   // Initialize local state with form context data
   const [emailState, setEmailState] = useState({
     value: formData.step2?.email || "",
-    isTouched: false,
+    isBlurred: false,
   });
 
   const [verificationState, setVerificationState] = useState({
     code: formData.step2?.code || "",
-    isTouched: false,
+    isBlurred: false,
     showVerification: formData.step2?.showVerification || false,
     verified: formData.step2?.verified || false,
   });
 
+  const [isScheduled, setIsScheduled] = useState(
+    formData.step2?.isScheduled || false
+  );
+
+  // Add Calendly event listener
+  useCalendlyEventListener({
+    onDateAndTimeSelected: () => {
+      console.log("Date and time selected");
+    },
+    onEventScheduled: (e) => {
+      console.log("Event scheduled:", e.data.payload);
+      setIsScheduled(true);
+    },
+  });
+
   // Update form context whenever states change
   useEffect(() => {
-    const isEmailValid = emailState.value.includes("@");
+    const isEmailValid = isValidEmail(emailState.value);
     const isVerificationValid = verificationState.verified;
 
     updateFormData("step2", {
@@ -40,16 +58,16 @@ const Step2 = () => {
       code: verificationState.code,
       showVerification: verificationState.showVerification,
       verified: verificationState.verified,
-      isValid: isEmailValid && isVerificationValid,
-      isComplete: isEmailValid && isVerificationValid,
+      isScheduled: isScheduled,
+      isValid: isEmailValid && isVerificationValid && isScheduled,
+      isComplete: isEmailValid && isVerificationValid && isScheduled,
     });
-  }, [emailState, verificationState]);
+  }, [emailState, verificationState, isScheduled]);
 
   const handleEmailChange = (e) => {
     setEmailState((prev) => ({
       ...prev,
       value: e.target.value,
-      isTouched: true,
     }));
   };
 
@@ -57,21 +75,20 @@ const Step2 = () => {
     setVerificationState((prev) => ({
       ...prev,
       code: e.target.value,
-      isTouched: true,
     }));
   };
 
   const handleEmailBlur = () => {
     setEmailState((prev) => ({
       ...prev,
-      isTouched: true,
+      isBlurred: true,
     }));
   };
 
   const handleCodeBlur = () => {
     setVerificationState((prev) => ({
       ...prev,
-      isTouched: true,
+      isBlurred: true,
     }));
   };
 
@@ -90,14 +107,53 @@ const Step2 = () => {
     }));
   };
 
-  // Validation logic
-  const hasEmailError = emailState.isTouched && !emailState.value.includes("@");
-  const emailErrorMessage = hasEmailError ? "Please enter a valid email" : "";
+  const handleReschedule = () => {
+    // Commenting out rescheduling functionality as it creates a new appointment instead of rescheduling
+    // setIsScheduled(false);
+  };
 
-  const hasCodeError = verificationState.isTouched && !verificationState.code;
-  const codeErrorMessage = hasCodeError
-    ? "Please enter the verification code"
+  // Validation logic
+  const hasEmailError = emailState.isBlurred && !isValidEmail(emailState.value);
+  const emailErrorMessage = hasEmailError
+    ? "Please enter a valid email address"
     : "";
+
+  const hasCodeError =
+    verificationState.isBlurred &&
+    !isValidVerificationCode(verificationState.code);
+  const codeErrorMessage = hasCodeError
+    ? "Please enter a valid 6-digit verification code"
+    : "";
+
+  const renderAppointmentSuccess = () => (
+    <Paper elevation={3} sx={{ p: 3, maxWidth: 500, mx: "auto" }}>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: 2,
+        }}
+      >
+        <CheckCircleIcon sx={{ fontSize: 60, color: "success.main" }} />
+        <Typography variant="h6" color="success.main" align="center">
+          Appointment Scheduled Successfully!
+        </Typography>
+        <Typography variant="body1" align="center" color="text.secondary">
+          You have received a confirmation email with the meeting details.
+        </Typography>
+        {/* Commenting out reschedule button as it creates a new appointment instead of rescheduling
+        <Button 
+          variant="outlined" 
+          onClick={handleReschedule}
+          sx={{ mt: 2 }}
+        >
+          Reschedule Meeting
+        </Button>
+        */}
+      </Box>
+    </Paper>
+  );
 
   return (
     <Box>
@@ -112,25 +168,27 @@ const Step2 = () => {
               Please enter your work email to schedule a meeting
             </Typography>
 
-            <TextField
-              fullWidth
-              label="Work Email"
-              type="email"
-              value={emailState.value}
-              onChange={handleEmailChange}
-              onBlur={handleEmailBlur}
-              size={isMobile ? "small" : "medium"}
-              variant="outlined"
-              placeholder="Enter your work email address"
-              error={hasEmailError}
-              helperText={emailErrorMessage}
-            />
+            <Box>
+              <FormLabel required>Work Email</FormLabel>
+              <TextField
+                fullWidth
+                type="email"
+                value={emailState.value}
+                onChange={handleEmailChange}
+                onBlur={handleEmailBlur}
+                size={isMobile ? "small" : "medium"}
+                variant="outlined"
+                placeholder="Enter your work email address"
+                error={hasEmailError}
+                helperText={emailErrorMessage}
+              />
+            </Box>
 
             <Button
               variant="contained"
               onClick={sendVerification}
               fullWidth
-              disabled={!emailState.value || !emailState.value.includes("@")}
+              disabled={!emailState.value || !isValidEmail(emailState.value)}
               sx={{ mt: 1 }}
             >
               Send Verification Code
@@ -151,24 +209,31 @@ const Step2 = () => {
                     it below.
                   </Typography>
 
-                  <TextField
-                    fullWidth
-                    label="Verification Code"
-                    value={verificationState.code}
-                    onChange={handleCodeChange}
-                    onBlur={handleCodeBlur}
-                    size={isMobile ? "small" : "medium"}
-                    variant="outlined"
-                    placeholder="Enter the 6-digit code"
-                    error={hasCodeError}
-                    helperText={codeErrorMessage}
-                  />
+                  <Box>
+                    <FormLabel required>Verification Code</FormLabel>
+                    <TextField
+                      fullWidth
+                      value={verificationState.code}
+                      onChange={handleCodeChange}
+                      onBlur={handleCodeBlur}
+                      size={isMobile ? "small" : "medium"}
+                      variant="outlined"
+                      placeholder="Enter the 6-digit code"
+                      error={hasCodeError}
+                      helperText={codeErrorMessage}
+                      inputProps={{
+                        maxLength: 6,
+                        pattern: "[0-9]*",
+                        inputMode: "numeric",
+                      }}
+                    />
+                  </Box>
 
                   <Button
                     variant="contained"
                     onClick={verifyCode}
                     fullWidth
-                    disabled={!verificationState.code}
+                    disabled={!isValidVerificationCode(verificationState.code)}
                   >
                     Verify & Continue
                   </Button>
@@ -177,15 +242,14 @@ const Step2 = () => {
             )}
           </Box>
         </Paper>
+      ) : isScheduled ? (
+        renderAppointmentSuccess()
       ) : (
         <Box sx={{ height: "650px" }}>
           <InlineWidget
             url="https://calendly.com/topaccessories99/30min"
             prefill={{
               email: emailState.value,
-              // customAnswers: {
-              //   a1: emailState.value,
-              // },
             }}
             styles={{ height: "100%" }}
           />
