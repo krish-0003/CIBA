@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   TextField,
@@ -30,19 +30,45 @@ const Step1 = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const { formData, updateFormData } = useFormContext();
-  const stepData = formData.step1 || {};
 
-  // Special handler for industry to store backend value
+  // Initialize local state
+  const [selectedIndustry, setSelectedIndustry] = useState({
+    value: formData.step1?.industry || "",
+    display:
+      industryOptions.find((opt) => opt.value === formData.step1?.industry)
+        ?.display || "",
+  });
+
+  const [isTouched, setIsTouched] = useState(false);
+
+  // Update form context whenever selected industry changes
+  useEffect(() => {
+    const isValid = Boolean(selectedIndustry.value);
+    updateFormData("step1", {
+      industry: selectedIndustry.value,
+      isValid,
+      isComplete: isValid,
+    });
+  }, [selectedIndustry]);
+
   const handleIndustryChange = (event) => {
+    setIsTouched(true);
     const selectedOption = industryOptions.find(
       (option) => option.display === event.target.value
     );
-    updateFormData("step1", {
-      ...stepData,
-      industry: selectedOption ? selectedOption.value : "",
-      industryDisplay: event.target.value,
+
+    setSelectedIndustry({
+      display: event.target.value,
+      value: selectedOption?.value || "",
     });
   };
+
+  const handleBlur = () => {
+    setIsTouched(true);
+  };
+
+  const hasError = isTouched && !selectedIndustry.value;
+  const errorMessage = hasError ? "Please select an industry" : "";
 
   return (
     <Box>
@@ -57,11 +83,14 @@ const Step1 = () => {
           label="What Industry are you in?"
           variant="outlined"
           size={isMobile ? "small" : "medium"}
-          value={stepData.industryDisplay || ""}
+          value={selectedIndustry.display}
           onChange={handleIndustryChange}
+          onBlur={handleBlur}
+          error={hasError}
+          helperText={errorMessage}
         >
           {industryOptions.map((option) => (
-            <MenuItem key={option.display} value={option.display}>
+            <MenuItem key={option.value} value={option.display}>
               {option.display}
             </MenuItem>
           ))}
