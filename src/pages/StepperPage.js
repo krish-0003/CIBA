@@ -14,6 +14,7 @@ import {
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { FormProvider, useFormContext } from "../context/FormContext";
+import rivAI from "../assets/RIV AI.png";
 
 // Import step components
 import Step0 from "../components/stepper/Step0";
@@ -107,11 +108,40 @@ const StepperContent = () => {
           flexGrow: 1,
         }}
       >
-        {!isMobile && (
-          <Typography variant="h4" component="h1" gutterBottom sx={{ mb: 4 }}>
-            Business Setup Wizard
-          </Typography>
-        )}
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "flex-end",
+            justifyContent: "space-between",
+            mb: 4,
+          }}
+        >
+          <Box>
+            <Typography
+              variant="h3"
+              component="h1"
+              gutterBottom
+              sx={{ mb: 0, mr: 2 }}
+            >
+              Can it be Automated?
+            </Typography>
+            <Box sx={{ display: "flex", alignItems: "flex-end" }}>
+              <Typography
+                variant="h5"
+                component="h1"
+                gutterBottom
+                sx={{ mb: 0, mr: 1 }}
+              >
+                By RIV AI
+              </Typography>
+              <img
+                src={rivAI}
+                alt="RIV AI"
+                style={{ height: 32, width: "auto" }}
+              />
+            </Box>
+          </Box>
+        </Box>
 
         {!isMobile && (
           <Stepper
