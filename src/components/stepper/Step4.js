@@ -102,7 +102,7 @@ const Step4 = () => {
 
       <Grid container spacing={{ xs: 2, sm: 3 }}>
         <Grid item xs={12}>
-          <Paper elevation={3} sx={{ p: 3 }}>
+          <Paper elevation={0} sx={{ p: 3 }}>
             <Typography
               variant="h6"
               gutterBottom

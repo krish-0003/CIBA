@@ -126,7 +126,7 @@ const Step2 = () => {
     : "";
 
   const renderAppointmentSuccess = () => (
-    <Paper elevation={3} sx={{ p: 3, maxWidth: 500, mx: "auto" }}>
+    <Paper elevation={0} sx={{ p: 3, maxWidth: 500, mx: "auto" }}>
       <Box
         sx={{
           display: "flex",
@@ -162,7 +162,7 @@ const Step2 = () => {
       </Typography>
 
       {!verificationState.verified ? (
-        <Paper elevation={3} sx={{ p: 3, maxWidth: 500, mx: "auto" }}>
+        <Paper elevation={0} sx={{ p: 3, maxWidth: 500, mx: "auto" }}>
           <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
             <Typography variant="body1" color="text.secondary" gutterBottom>
               Please enter your work email to schedule a meeting

@@ -145,10 +145,10 @@ const Step3 = () => {
         Tell us about your business and technology needs
       </Typography>
 
-      <Grid container spacing={{ xs: 2, sm: 3 }}>
+      <Grid container spacing={{ xs: 0, sm: 0 }}>
         {/* Business Description Section */}
         <Grid item xs={12}>
-          <Paper elevation={3} sx={{ p: 3 }}>
+          <Paper elevation={0} sx={{ p: 3 }}>
             <Typography
               variant="h6"
               gutterBottom
@@ -253,12 +253,14 @@ const Step3 = () => {
 
         {/* Tech Stack Section - All full width */}
         <Grid item xs={12}>
-          <Paper elevation={3} sx={{ p: 3 }}>
+          <Paper elevation={0} sx={{ p: 3 }}>
+          <Divider sx={{ my:2 }} />
             <Typography
               variant="h6"
               gutterBottom
               sx={{ display: "flex", alignItems: "center", gap: 1 }}
             >
+              
               Your Technology Environment
               <Tooltip title="Understanding your tech stack helps us identify AI integration opportunities">
                 <InfoOutlinedIcon fontSize="small" color="action" />
