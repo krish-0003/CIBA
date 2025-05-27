@@ -12,6 +12,7 @@ import {
 import { useFormContext } from "../../context/FormContext";
 import { FormLabel } from "../../utils/formComponents";
 import { isValidEmail, isValidVerificationCode } from "../../utils/validation";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 
 const Step2 = () => {
   const theme = useTheme();
@@ -213,11 +214,25 @@ const Step2 = () => {
               gap: 2,
             }}
           >
-            <Typography variant="h6" color="success.main" align="center">
+            <CheckCircleIcon
+              sx={{
+                fontSize: 60,
+                color: "success.main",
+                mb: 1,
+              }}
+            />
+            <Typography
+              variant="h6"
+              color="success.main"
+              align="center"
+              sx={{ fontWeight: "bold" }}
+            >
               Contact Information Verified!
             </Typography>
             <Typography variant="body1" align="center" color="text.secondary">
-              You can now proceed to the next step.
+              Thank you, <strong>{formState.name}</strong>! Your contact
+              information has been successfully verified. You can now proceed to
+              the next step.
             </Typography>
           </Box>
         </Paper>
