@@ -94,16 +94,9 @@ Daily Hours: ${task.dailyHours || "0"}`
     <Fade in={true}>
       <Paper
         elevation={0}
-        sx={{
-          p: 3,
-          maxWidth: 500,
-          mx: "auto",
-          textAlign: "center",
-          bgcolor: "success.light",
-          color: "success.contrastText",
-        }}
+        sx={{ p: 3, maxWidth: 500, mx: "auto", textAlign: "center" }}
       >
-        <CheckCircleIcon sx={{ fontSize: 48, mb: 2 }} />
+        <CheckCircleIcon sx={{ fontSize: 48, mb: 2, color: "success.main" }} />
         <Typography variant="h6" gutterBottom>
           Meeting Scheduled Successfully!
         </Typography>

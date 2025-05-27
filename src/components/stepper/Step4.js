@@ -100,9 +100,9 @@ const Step4 = () => {
         Tasks for Automation
       </Typography>
 
-      <Grid container spacing={{ xs: 2, sm: 3 }}>
+      <Grid container spacing={{ xs: 0, sm: 0 }}>
         <Grid item xs={12}>
-          <Paper elevation={0} sx={{ p: 3 }}>
+          <Paper elevation={0}>
             <Typography
               variant="h6"
               gutterBottom

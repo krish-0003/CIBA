@@ -205,36 +205,19 @@ const Step2 = () => {
           </Box>
         </Paper>
       ) : (
-        <Paper elevation={0} sx={{ p: 3, maxWidth: 500, mx: "auto" }}>
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              gap: 2,
-            }}
-          >
-            <CheckCircleIcon
-              sx={{
-                fontSize: 60,
-                color: "success.main",
-                mb: 1,
-              }}
-            />
-            <Typography
-              variant="h6"
-              color="success.main"
-              align="center"
-              sx={{ fontWeight: "bold" }}
-            >
-              Contact Information Verified!
-            </Typography>
-            <Typography variant="body1" align="center" color="text.secondary">
-              Thank you, <strong>{formState.name}</strong>! Your contact
-              information has been successfully verified. You can now proceed to
-              the next step.
-            </Typography>
-          </Box>
+        <Paper
+          elevation={0}
+          sx={{ p: 3, maxWidth: 500, mx: "auto", textAlign: "center" }}
+        >
+          <CheckCircleIcon
+            sx={{ fontSize: 48, mb: 2, color: "success.main" }}
+          />
+          <Typography variant="h6" gutterBottom>
+            Contact Information Verified!
+          </Typography>
+          <Typography variant="body1">
+            Thank you, {formState.name}. You can now proceed to the next step.
+          </Typography>
         </Paper>
       )}
     </Box>
