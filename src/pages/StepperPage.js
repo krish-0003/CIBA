@@ -26,7 +26,7 @@ import Step5 from "../components/stepper/Step5";
 const steps = [
   "Welcome",
   "Business Information",
-  "Financial Details",
+  "Schedule a Meeting",
   "Market Analysis",
   "Growth Strategy",
   "Review & Submit",
