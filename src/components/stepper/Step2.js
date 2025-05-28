@@ -109,7 +109,7 @@ const Step2 = () => {
       </Typography>
 
       {!formState.verified ? (
-        <Paper elevation={0} sx={{ p: 3, maxWidth: 500, mx: "auto" }}>
+        <Box elevation={0} sx={{ p: 3, maxWidth: 500, mx: "auto" }}>
           <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
             <Typography variant="body1" color="text.secondary" gutterBottom>
               Please enter your contact information to proceed
@@ -207,9 +207,9 @@ const Step2 = () => {
               </Fade>
             )}
           </Box>
-        </Paper>
+        </Box>
       ) : (
-        <Paper
+        <Box
           elevation={0}
           sx={{ p: 3, maxWidth: 500, mx: "auto", textAlign: "center" }}
         >
@@ -222,7 +222,7 @@ const Step2 = () => {
           <Typography variant="body1">
             Thank you, {formState.name}. You can now proceed to the next step.
           </Typography>
-        </Paper>
+        </Box>
       )}
     </Box>
   );

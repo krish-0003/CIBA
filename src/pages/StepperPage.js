@@ -173,7 +173,7 @@ const StepperContent = () => {
           </Stepper>
         )}
 
-        <Paper
+        <Box
           sx={{
             p: { xs: 2, sm: 3 },
             mb: 3,
@@ -265,7 +265,7 @@ const StepperContent = () => {
               </Box>
             </>
           )}
-        </Paper>
+        </Box>
       </Box>
     </Box>
   );

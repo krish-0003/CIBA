@@ -27,7 +27,7 @@ const Step5 = () => {
 
   const renderSection = (title, tooltip, content) => (
     <Grid item xs={12}>
-      <Paper elevation={0}>
+      <Box elevation={0}>
         <Typography
           variant="h6"
           gutterBottom
@@ -43,7 +43,7 @@ const Step5 = () => {
             {content}
           </Grid>
         </Grid>
-      </Paper>
+      </Box>
     </Grid>
   );
 

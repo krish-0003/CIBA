@@ -92,7 +92,7 @@ Daily Hours: ${task.dailyHours || "0"}`
 
   const renderAppointmentSuccess = () => (
     <Fade in={true}>
-      <Paper
+      <Box
         elevation={0}
         sx={{ p: 3, maxWidth: 500, mx: "auto", textAlign: "center" }}
       >
@@ -105,7 +105,7 @@ Daily Hours: ${task.dailyHours || "0"}`
           {formData.step2?.name}. You will receive a calendar invitation
           shortly.
         </Typography>
-      </Paper>
+      </Box>
     </Fade>
   );
 

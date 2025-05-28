@@ -151,7 +151,7 @@ const Step3 = () => {
       <Grid container spacing={{ xs: 0, sm: 0 }}>
         {/* Business Description Section */}
         <Grid item xs={12}>
-          <Paper elevation={0}>
+          <Box elevation={0}>
             <Typography
               variant="h6"
               gutterBottom
@@ -251,12 +251,12 @@ const Step3 = () => {
                 />
               </Grid>
             </Grid>
-          </Paper>
+          </Box>
         </Grid>
 
         {/* Tech Stack Section - All full width */}
         <Grid item xs={12}>
-          <Paper elevation={0}>
+          <Box elevation={0}>
           <Divider sx={{ my:2 }} />
             <Typography
               variant="h6"
@@ -339,7 +339,7 @@ const Step3 = () => {
                 </RadioGroup>
               </Grid>
             </Grid>
-          </Paper>
+          </Box>
         </Grid>
       </Grid>
     </Box>

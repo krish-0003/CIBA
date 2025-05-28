@@ -105,7 +105,7 @@ const Step4 = () => {
 
       <Grid container spacing={{ xs: 0, sm: 0 }}>
         <Grid item xs={12}>
-          <Paper elevation={0}>
+          <Box elevation={0}>
             <Typography
               variant="h6"
               gutterBottom
@@ -225,7 +225,7 @@ const Step4 = () => {
             >
               Add Another Task
             </Button>
-          </Paper>
+          </Box>
         </Grid>
       </Grid>
     </Box>
