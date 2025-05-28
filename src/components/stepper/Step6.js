@@ -111,8 +111,11 @@ Daily Hours: ${task.dailyHours || "0"}`
 
   return (
     <Box>
-      <Typography variant={isMobile ? "h6" : "h5"} gutterBottom sx={{ mb: 3 }}>
-        Schedule Your Consultation
+ <Typography
+        variant={isMobile ? "h6" : "h5"}
+        gutterBottom
+        sx={{ mb: 1, textAlign: "center" }}
+      >        Schedule Your Consultation
       </Typography>
 
       {isScheduled && showCustomConfirmation ? (

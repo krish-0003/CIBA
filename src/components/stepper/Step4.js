@@ -96,8 +96,11 @@ const Step4 = () => {
 
   return (
     <Box>
-      <Typography variant={isMobile ? "h6" : "h5"} gutterBottom sx={{ mb: 3 }}>
-        Tasks for Automation
+ <Typography
+        variant={isMobile ? "h6" : "h5"}
+        gutterBottom
+        sx={{ mb: 1, textAlign: "center" }}
+      >        Tasks for Automation
       </Typography>
 
       <Grid container spacing={{ xs: 0, sm: 0 }}>

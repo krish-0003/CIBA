@@ -15,6 +15,7 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { FormProvider, useFormContext } from "../context/FormContext";
 import rivAI from "../assets/RIV AI.png";
+import DottedGrid from "../components/DottedGrid";
 
 // Import step components
 import Step0 from "../components/stepper/Step0";
@@ -104,6 +105,7 @@ const StepperContent = () => {
         position: "relative",
       }}
     >
+      <DottedGrid />
       <Box
         sx={{
           width: "100%",

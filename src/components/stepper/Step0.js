@@ -1,13 +1,21 @@
 import React from "react";
-import { Box, Typography, Button } from "@mui/material";
+
+import { Box, Typography, Button ,useMediaQuery,useTheme} from "@mui/material";
 
 const Step0 = ({ onNext }) => {
-  return (
-    <Box sx={{ textAlign: "center", py: 4 }}>
-      <Typography variant="h5" component="h2" gutterBottom sx={{ mb: 3 }}>
-        Welcome to RIV AI Business Automation Tool
-      </Typography>
+  const theme = useTheme();
 
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+
+  return (
+    <Box sx={{ textAlign: "center"}}>
+<Typography
+        variant={isMobile ? "h6" : "h5"}
+        gutterBottom
+        sx={{ mb: 3, textAlign: "center" }}
+      >        Welcome to RIV AI Business Automation Tool
+      </Typography>
+      
       <Typography
         variant="body1"
         sx={{ mb: 4, maxWidth: "800px", mx: "auto", lineHeight: 1.6 }}

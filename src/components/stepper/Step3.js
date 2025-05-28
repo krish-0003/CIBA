@@ -141,8 +141,11 @@ const Step3 = () => {
 
   return (
     <Box>
-      <Typography variant={isMobile ? "h6" : "h5"} gutterBottom sx={{ mb: 3 }}>
-        Tell us about your business and technology needs
+ <Typography
+        variant={isMobile ? "h6" : "h5"}
+        gutterBottom
+        sx={{ mb: 1, textAlign: "center" }}
+      >        Tell us about your business and technology needs
       </Typography>
 
       <Grid container spacing={{ xs: 0, sm: 0 }}>

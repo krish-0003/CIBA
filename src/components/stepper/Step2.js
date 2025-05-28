@@ -100,7 +100,11 @@ const Step2 = () => {
 
   return (
     <Box>
-      <Typography variant={isMobile ? "h6" : "h5"} gutterBottom sx={{ mb: 3 }}>
+      <Typography
+        variant={isMobile ? "h6" : "h5"}
+        gutterBottom
+        sx={{ mb: 1, textAlign: "center" }}
+      >
         Contact Information
       </Typography>
 
