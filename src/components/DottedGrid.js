@@ -20,7 +20,7 @@ const DottedGrid = () => {
         ...position,
         zIndex: -1,
         pointerEvents: "none",
-        opacity: 0.25,
+        opacity: 0.4,
         display: "grid",
         gridTemplateColumns: `repeat(${cols}, 8px)`,
         gridTemplateRows: `repeat(${rows}, 8px)`,

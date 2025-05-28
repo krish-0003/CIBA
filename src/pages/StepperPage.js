@@ -16,6 +16,7 @@ import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { FormProvider, useFormContext } from "../context/FormContext";
 import rivAI from "../assets/RIV AI.png";
 import DottedGrid from "../components/DottedGrid";
+import MouseGradient from "../components/MouseGradient";
 
 // Import step components
 import Step0 from "../components/stepper/Step0";
@@ -106,6 +107,7 @@ const StepperContent = () => {
       }}
     >
       <DottedGrid />
+      <MouseGradient />
       <Box
         sx={{
           width: "100%",
@@ -114,6 +116,8 @@ const StepperContent = () => {
           px: { xs: 2, sm: 3, md: 4 },
           py: { xs: 2, sm: 3 },
           flexGrow: 1,
+          position: "relative",
+          zIndex: 1,
         }}
       >
         <Box
@@ -175,6 +179,14 @@ const StepperContent = () => {
             mb: 3,
             borderRadius: 2,
             boxShadow: 2,
+            background: "rgba(255, 255, 255, 0.7)",
+            backdropFilter: "blur(10px)",
+            transition: "all 0.3s ease",
+            "&:hover": {
+              background: "rgba(255, 255, 255, 0.85)",
+              boxShadow: "0 8px 32px rgba(31, 38, 135, 0.15)",
+            },
+            border: "1px solid rgba(255, 255, 255, 0.18)",
           }}
         >
           {activeStep === steps.length ? (
