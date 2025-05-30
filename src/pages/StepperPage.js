@@ -41,8 +41,7 @@ const steps = [
 const displaySteps = [
   "Welcome",
   "Information",
-  "Business Overview",
-  "Automation",
+  "Business & Automation",
   "Review",
 ];
 
@@ -53,33 +52,20 @@ const StepperContent = () => {
   const { formData } = useFormContext();
 
   const getDisplayStepNumber = (actualStep) => {
-    if (actualStep <= 1) return actualStep; // Welcome and Information
-    if (actualStep === 2) return 2; // Contact (hidden)
-    if (actualStep === 3) return 2; // Business Overview
-    if (actualStep === 4) return 3; // Automation
-    if (actualStep === 5)
-      return formData.step3?.aiInterest === "unsure" ? 3 : 4; // Review (skip to 3 if unsure)
-    if (actualStep === 6)
-      return formData.step3?.aiInterest === "unsure" ? 3 : 4; // Schedule Consultation (hidden)
+    if (actualStep === 0) return 0; // Welcome
+    if (actualStep === 1 || actualStep === 2) return 1; // Information and Contact merged
+    if (actualStep === 3 || actualStep === 4) return 2; // Business Overview and Automation merged
+    if (actualStep === 5) return 3; // Review
+    if (actualStep === 6) return 3; // Schedule Consultation (hidden)
     return 0;
   };
 
   const handleNext = () => {
-    // If we're on step 3 and user is unsure about AI, skip step 4
-    if (activeStep === 3 && formData.step3?.aiInterest === "unsure") {
-      setActiveStep(5); // Skip to step 5
-    } else {
-      setActiveStep((prevActiveStep) => prevActiveStep + 1);
-    }
+    setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
 
   const handleBack = () => {
-    // If we're on step 5 and came from step 3 (skipped step 4), go back to step 3
-    if (activeStep === 5 && formData.step3?.aiInterest === "unsure") {
-      setActiveStep(3);
-    } else {
-      setActiveStep((prevActiveStep) => prevActiveStep - 1);
-    }
+    setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
 
   const handleReset = () => {
