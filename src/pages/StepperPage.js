@@ -37,6 +37,26 @@ const steps = [
   "Schedule Consultation",
 ];
 
+// Display steps without Contact and Schedule Consultation
+const displaySteps = [
+  "Welcome",
+  "Information",
+  "Business Overview",
+  "Automation",
+  "Review",
+];
+
+// Map actual step numbers to display step numbers
+const getDisplayStepNumber = (actualStep) => {
+  if (actualStep <= 1) return actualStep; // Welcome and Information
+  if (actualStep === 2) return 2; // Contact (hidden)
+  if (actualStep === 3) return 2; // Business Overview
+  if (actualStep === 4) return 3; // Automation
+  if (actualStep === 5) return 4; // Review
+  if (actualStep === 6) return 4; // Schedule Consultation (hidden)
+  return 0;
+};
+
 const StepperContent = () => {
   const [activeStep, setActiveStep] = useState(0);
   const theme = useTheme();
@@ -157,7 +177,7 @@ const StepperContent = () => {
 
         {!isMobile && (
           <Stepper
-            activeStep={activeStep}
+            activeStep={getDisplayStepNumber(activeStep)}
             sx={{
               mb: 4,
               "& .MuiStepLabel-label": {
@@ -165,7 +185,7 @@ const StepperContent = () => {
               },
             }}
           >
-            {steps.map((label) => (
+            {displaySteps.map((label) => (
               <Step key={label}>
                 <StepLabel>{label}</StepLabel>
               </Step>
@@ -216,23 +236,33 @@ const StepperContent = () => {
                     <Typography variant="body2" color="text.secondary">
                       {activeStep === 0
                         ? "Getting Started"
-                        : `Step ${activeStep} of ${steps.length - 1}`}
+                        : `Step ${getDisplayStepNumber(activeStep)} of ${
+                            displaySteps.length - 1
+                          }`}
                     </Typography>
                     <Typography variant="body2" color="primary">
-                      {Math.round((activeStep / (steps.length - 1)) * 100)}%
-                      Complete
+                      {Math.round(
+                        (getDisplayStepNumber(activeStep) /
+                          (displaySteps.length - 1)) *
+                          100
+                      )}
+                      % Complete
                     </Typography>
                   </Box>
                   <LinearProgress
                     variant="determinate"
-                    value={(activeStep / (steps.length - 1)) * 100}
+                    value={
+                      (getDisplayStepNumber(activeStep) /
+                        (displaySteps.length - 1)) *
+                      100
+                    }
                     sx={{ height: 8, borderRadius: 4 }}
                   />
                   <Typography
                     variant="subtitle1"
                     sx={{ mt: 1, fontWeight: "medium" }}
                   >
-                    {steps[activeStep]}
+                    {displaySteps[getDisplayStepNumber(activeStep)]}
                   </Typography>
                 </Box>
               )}
