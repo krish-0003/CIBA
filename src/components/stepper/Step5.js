@@ -11,17 +11,22 @@ import {
 } from "@mui/material";
 import { useFormContext } from "../../context/FormContext";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import { formatFormData } from "../../services/formDataService";
 
 const Step5 = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const { formData, updateFormData } = useFormContext();
 
-  // Update form context to mark step as valid
+  // Update form context to mark step as valid and log formatted data
   useEffect(() => {
+    const formattedData = formatFormData(formData);
+    console.log("Formatted Form Data:", formattedData);
+
     updateFormData("step5", {
       isValid: true,
       isComplete: true,
+      formattedData: formattedData,
     });
   }, []);
 
@@ -47,148 +52,49 @@ const Step5 = () => {
     </Grid>
   );
 
-  const renderBusinessInfo = () => (
-    <Box sx={{ color: "text.secondary" }}>
-      <Typography variant="body1" sx={{ mb: 1 }}>
-        Industry:{" "}
-        <Box component="span" sx={{ color: "text.primary" }}>
-          {formData.step1?.industry || "Not provided"}
-        </Box>
-      </Typography>
-    </Box>
-  );
+ 
 
-  const renderContactInfo = () => (
-    <Box sx={{ color: "text.secondary" }}>
-      <Typography variant="body1" sx={{ mb: 1 }}>
-        Name:{" "}
-        <Box component="span" sx={{ color: "text.primary" }}>
-          {formData.step2?.name || "Not provided"}
-        </Box>
-      </Typography>
-      <Typography variant="body1">
-        Email:{" "}
-        <Box component="span" sx={{ color: "text.primary" }}>
-          {formData.step2?.email || "Not provided"}
-        </Box>
-      </Typography>
-    </Box>
-  );
 
-  const renderMarketAnalysis = () => (
-    <Box sx={{ color: "text.secondary" }}>
-      <Typography variant="body1" sx={{ mb: 1 }}>
-        Business Description:{" "}
-        <Box component="span" sx={{ color: "text.primary" }}>
-          {formData.step3?.description || "Not provided"}
-        </Box>
-      </Typography>
-      <Typography variant="body1" sx={{ mb: 1 }}>
-        Employee Count:{" "}
-        <Box component="span" sx={{ color: "text.primary" }}>
-          {formData.step3?.employeeCount || "Not provided"}
-        </Box>
-      </Typography>
-      <Typography variant="body1" sx={{ mb: 1 }}>
-        Pain Points:{" "}
-        <Box component="span" sx={{ color: "text.primary" }}>
-          {formData.step3?.painPoints?.join(", ") || "Not provided"}
-        </Box>
-      </Typography>
-      <Typography variant="body1" sx={{ mb: 1 }}>
-        Current Tech Stack:{" "}
-        <Box component="span" sx={{ color: "text.primary" }}>
-          {formData.step3?.currentStack || "Not provided"}
-        </Box>
-      </Typography>
-      <Typography variant="body1">
-        Tools Used:{" "}
-        <Box component="span" sx={{ color: "text.primary" }}>
-          {formData.step3?.tools?.join(", ") || "Not provided"}
-        </Box>
-      </Typography>
-    </Box>
-  );
+  
 
-  const renderGrowthStrategy = () => (
+  
+
+  const renderFormattedData = () => (
     <Box sx={{ color: "text.secondary" }}>
-      {formData.step4?.tasks?.map((task, index) => (
-        <Box key={index} sx={{ mb: 2 }}>
-          <Typography variant="body1" sx={{ mb: 1, fontWeight: "medium" }}>
-            Task {index + 1}:{" "}
-            <Box component="span" sx={{ color: "text.primary" }}>
-              {task.title}
-            </Box>
-          </Typography>
-          <Box sx={{ pl: 2 }}>
-            <Typography variant="body1" sx={{ mb: 0.5 }}>
-              Description:{" "}
-              <Box component="span" sx={{ color: "text.primary" }}>
-                {task.description}
-              </Box>
-            </Typography>
-            <Typography variant="body1" sx={{ mb: 0.5 }}>
-              Hourly Cost:{" "}
-              <Box component="span" sx={{ color: "text.primary" }}>
-                ${task.hourlyCost || "0"}
-              </Box>
-            </Typography>
-            <Typography variant="body1">
-              Daily Hours:{" "}
-              <Box component="span" sx={{ color: "text.primary" }}>
-                {task.dailyHours || "0"}
-              </Box>
-            </Typography>
-          </Box>
-        </Box>
-      ))}
+      <Paper
+        elevation={0}
+        sx={{
+          p: 2,
+          backgroundColor: "rgba(0, 0, 0, 0.02)",
+          borderRadius: 1,
+          overflow: "auto",
+          maxHeight: "400px",
+        }}
+      >
+        <pre style={{ margin: 0, whiteSpace: "pre-wrap" }}>
+          {JSON.stringify(formatFormData(formData), null, 2)}
+        </pre>
+      </Paper>
     </Box>
   );
 
   return (
     <Box>
- <Typography
+      <Typography
         variant={isMobile ? "h6" : "h5"}
         gutterBottom
         sx={{ mb: 1, textAlign: "center" }}
-      >        Review Your Information
+      >
+        Review Your Information
       </Typography>
 
       <Grid container spacing={{ xs: 0, sm: 0 }}>
-        {renderSection(
-          "Business Information",
-          "Review your business details and industry selection",
-          renderBusinessInfo()
-        )}
-
-        <Grid item xs={12}>
-          <Divider sx={{ my: 2 }} />
-        </Grid>
+        
 
         {renderSection(
-          "Contact Information",
-          "Verify your contact details",
-          renderContactInfo()
-        )}
-
-        <Grid item xs={12}>
-          <Divider sx={{ my: 2 }} />
-        </Grid>
-
-        {renderSection(
-          "Market Analysis",
-          "Review your business overview and technology environment",
-          renderMarketAnalysis()
-        )}
-
-        <Grid item xs={12}>
-          <Divider sx={{ my: 2 }} />
-        </Grid>
-
-        {renderSection(
-          "Growth Strategy",
-          "Review your automation tasks and requirements",
-          renderGrowthStrategy()
+          "Formatted Data",
+          "Complete form data in JSON format",
+          renderFormattedData()
         )}
       </Grid>
 

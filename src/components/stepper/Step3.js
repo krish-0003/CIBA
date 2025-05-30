@@ -18,6 +18,8 @@ import {
   Tooltip,
   Divider,
   Button,
+  Select,
+  MenuItem,
 } from "@mui/material";
 import { useFormContext } from "../../context/FormContext";
 import { FormLabel } from "../../utils/formComponents";
@@ -48,6 +50,15 @@ const Step3 = () => {
     aiInterest: formData.step3?.aiInterest || "curious",
     isBlurred: false,
   });
+
+  const employeeRanges = [
+    { value: "1-10", label: "1-10 employees" },
+    { value: "11-50", label: "11-50 employees" },
+    { value: "51-200", label: "51-200 employees" },
+    { value: "201-500", label: "201-500 employees" },
+    { value: "501-1000", label: "501-1000 employees" },
+    { value: "1000+", label: "1000+ employees" },
+  ];
 
   // Update form context whenever states change
   useEffect(() => {
@@ -178,15 +189,23 @@ const Step3 = () => {
                 <FormLabel>
                   How many employees work in your organization?
                 </FormLabel>
-                <TextField
-                  fullWidth
-                  value={businessState.employeeCount}
-                  onChange={handleBusinessChange("employeeCount")}
-                  onBlur={handleBlur("employeeCount")}
-                  size={isMobile ? "small" : "medium"}
-                  type="number"
-                  placeholder="Enter the total number of employees"
-                />
+                <FormControl fullWidth size={isMobile ? "small" : "medium"}>
+                  <Select
+                    value={businessState.employeeCount}
+                    onChange={handleBusinessChange("employeeCount")}
+                    displayEmpty
+                    placeholder="Select employee range"
+                  >
+                    <MenuItem value="" disabled>
+                      Select employee range
+                    </MenuItem>
+                    {employeeRanges.map((range) => (
+                      <MenuItem key={range.value} value={range.value}>
+                        {range.label}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
               </Grid>
 
               {/* Second row - full width */}
