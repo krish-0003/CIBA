@@ -52,13 +52,6 @@ const Step5 = () => {
     </Grid>
   );
 
- 
-
-
-  
-
-  
-
   const renderFormattedData = () => (
     <Box sx={{ color: "text.secondary" }}>
       <Paper
@@ -89,8 +82,6 @@ const Step5 = () => {
       </Typography>
 
       <Grid container spacing={{ xs: 0, sm: 0 }}>
-        
-
         {renderSection(
           "Formatted Data",
           "Complete form data in JSON format",
