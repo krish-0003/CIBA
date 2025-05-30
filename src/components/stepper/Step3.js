@@ -44,7 +44,6 @@ const Step3 = () => {
   });
 
   const [techStackState, setTechStackState] = useState({
-    currentStack: formData.step3?.currentStack || "",
     tools: formData.step3?.tools || [],
     aiInterest: formData.step3?.aiInterest || "curious",
     isBlurred: false,
@@ -94,13 +93,6 @@ const Step3 = () => {
     }));
   };
 
-  const handleTechStackChange = (field) => (e) => {
-    setTechStackState((prev) => ({
-      ...prev,
-      [field]: e.target.value,
-    }));
-  };
-
   const handleToolsChange = (event, newValue) => {
     setTechStackState((prev) => ({
       ...prev,
@@ -141,11 +133,13 @@ const Step3 = () => {
 
   return (
     <Box>
- <Typography
+      <Typography
         variant={isMobile ? "h6" : "h5"}
         gutterBottom
         sx={{ mb: 1, textAlign: "center" }}
-      >        Tell us about your business and technology needs
+      >
+        {" "}
+        Tell us about your business and technology needs
       </Typography>
 
       <Grid container spacing={{ xs: 0, sm: 0 }}>
@@ -170,7 +164,8 @@ const Step3 = () => {
                   fullWidth
                   multiline
                   minRows={2}
-                  maxRows={6}                  value={businessState.description}
+                  maxRows={6}
+                  value={businessState.description}
                   onChange={handleBusinessChange("description")}
                   onBlur={handleBlur("description")}
                   size={isMobile ? "small" : "medium"}
@@ -243,7 +238,8 @@ const Step3 = () => {
                   fullWidth
                   multiline
                   minRows={2}
-                  maxRows={6}                  value={businessState.softwareInteractions}
+                  maxRows={6}
+                  value={businessState.softwareInteractions}
                   onChange={handleBusinessChange("softwareInteractions")}
                   onBlur={handleBlur("softwareInteractions")}
                   size={isMobile ? "small" : "medium"}
@@ -257,34 +253,18 @@ const Step3 = () => {
         {/* Tech Stack Section - All full width */}
         <Grid item xs={12}>
           <Box elevation={0}>
-          <Divider sx={{ my:2 }} />
+            <Divider sx={{ my: 2 }} />
             <Typography
               variant="h6"
               gutterBottom
               sx={{ display: "flex", alignItems: "center", gap: 1 }}
             >
-              
               Your Technology Environment
               <Tooltip title="Understanding your tech stack helps us identify AI integration opportunities">
                 <InfoOutlinedIcon fontSize="small" color="action" />
               </Tooltip>
             </Typography>
             <Grid container spacing={2}>
-              <Grid size={{ xs: 12, md: 12 }}>
-                <FormLabel>
-                  What technologies and systems do you currently use?
-                </FormLabel>
-                <TextField
-                  fullWidth
-                  multiline
-                  minRows={2}
-                  maxRows={6}                  value={techStackState.currentStack}
-                  onChange={handleTechStackChange("currentStack")}
-                  onBlur={handleBlur("currentStack")}
-                  size={isMobile ? "small" : "medium"}
-                  placeholder="e.g., We use Microsoft 365 for office work, SAP for ERP..."
-                />
-              </Grid>
               <Grid size={{ xs: 12, md: 6 }}>
                 <FormLabel>Select the tools your team uses daily</FormLabel>
                 <Autocomplete
