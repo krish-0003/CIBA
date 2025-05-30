@@ -51,6 +51,57 @@ const StepperContent = () => {
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const { formData } = useFormContext();
 
+  const formatFormData = () => {
+    return {
+      businessInfo: {
+        industry: formData.step1?.industry || null,
+        description: formData.step3?.description || null,
+        employeeCount: formData.step3?.employeeCount || null,
+        painPoints: formData.step3?.painPoints || [],
+        softwareInteractions: formData.step3?.softwareInteractions || null,
+        tools: formData.step3?.tools || [],
+        aiInterest: formData.step3?.aiInterest || null,
+      },
+      contactInfo: {
+        name: formData.step2?.name || null,
+        email: formData.step2?.email || null,
+      },
+      automationTasks:
+        formData.step4?.tasks?.map((task) => ({
+          title: task.title || null,
+          description: task.description || null,
+          hourlyCost: task.hourlyCost || 0,
+          dailyHours: task.dailyHours || 0,
+        })) || [],
+      metadata: {
+        currentStep: activeStep,
+        timestamp: new Date().toISOString(),
+      },
+    };
+  };
+
+  const shareStateWithBackend = async () => {
+    try {
+      const formattedData = formatFormData();
+      const response = await fetch("/api/submit-form", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formattedData),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to submit form data");
+      }
+
+      const result = await response.json();
+      console.log("Form data submitted successfully:", result);
+    } catch (error) {
+      console.error("Error submitting form data:", error);
+    }
+  };
+
   const getDisplayStepNumber = (actualStep) => {
     if (actualStep === 0) return 0; // Welcome
     if (actualStep === 1 || actualStep === 2) return 1; // Information and Contact merged
@@ -230,6 +281,14 @@ const StepperContent = () => {
                 sx={{ mt: 1, mr: 1 }}
               >
                 Reset
+              </Button>
+              <Button
+                onClick={shareStateWithBackend}
+                variant="contained"
+                color="primary"
+                sx={{ mt: 1 }}
+              >
+                Submit Form Data
               </Button>
             </Box>
           ) : (
