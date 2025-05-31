@@ -19,16 +19,16 @@ export const formatFormData = (formData) => {
     businessInfo: {
       industry: formData.step1?.industry || null,
       description: formData.step3?.description || null,
-      employeeCount: formData.step3?.employeeCount || "",
+      employeeCount: formData.step3?.employeeCount || null,
       painPoints: formData.step3?.painPoints || [],
       softwareInteractions: formData.step3?.softwareInteractions || null,
       tools: formData.step3?.tools || [],
-      aiInterest: formData.step3?.aiInterest || null,
+      hasSpecificTasks: formData.step3?.hasSpecificTasks ?? false,
     },
   };
 
-  // Only include automation tasks if AI interest is "curious"
-  if (formData.step3?.aiInterest === "curious") {
+  // Only include automation tasks if user has specific tasks
+  if (formData.step3?.hasSpecificTasks) {
     formattedData.automationTasks =
       formData.step4?.tasks?.map((task) => ({
         title: task.title || null,

@@ -82,7 +82,7 @@ const StepperContent = () => {
     if (actualStep === 0) return 0; // Welcome
     if (actualStep === 1 || actualStep === 2) return 1; // Information and Contact merged
     if (actualStep === 3) return 2; // Business Overview
-    if (actualStep === 4 && formData.step3?.aiInterest === "curious") return 2; // Automation (only if curious)
+    if (actualStep === 4 && formData.step3?.hasSpecificTasks) return 2; // Automation (only if has specific tasks)
     if (actualStep === 5) return 3; // Review
     if (actualStep === 6) return 3; // Schedule Consultation (hidden)
     return 0;
@@ -91,7 +91,7 @@ const StepperContent = () => {
   const handleNext = () => {
     setActiveStep((prevActiveStep) => {
       // If we're on step 3 (Business Overview) and user is not curious about AI
-      if (prevActiveStep === 3 && formData.step3?.aiInterest === "unsure") {
+      if (prevActiveStep === 3 && !formData.step3?.hasSpecificTasks) {
         return 5; // Skip to review step
       }
       return prevActiveStep + 1;
@@ -101,7 +101,7 @@ const StepperContent = () => {
   const handleBack = () => {
     setActiveStep((prevActiveStep) => {
       // If we're on review step (5) and user was not curious about AI
-      if (prevActiveStep === 5 && formData.step3?.aiInterest === "unsure") {
+      if (prevActiveStep === 5 && !formData.step3?.hasSpecificTasks) {
         return 3; // Go back to business overview
       }
       return prevActiveStep - 1;

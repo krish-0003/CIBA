@@ -36,7 +36,7 @@ const Step3 = () => {
   // Initialize state with form context data
   const [businessState, setBusinessState] = useState({
     description: formData.step3?.description || "",
-    employeeCount: formData.step3?.employeeCount || "",
+    employeeCount: formData.step3?.employeeCount || null,
     painPoints: formData.step3?.painPoints || [""],
     softwareInteractions: formData.step3?.softwareInteractions || "",
     isBlurred: {
@@ -47,7 +47,7 @@ const Step3 = () => {
 
   const [techStackState, setTechStackState] = useState({
     tools: formData.step3?.tools || [],
-    aiInterest: formData.step3?.aiInterest || "curious",
+    hasSpecificTasks: formData.step3?.hasSpecificTasks ?? true,
     isBlurred: false,
   });
 
@@ -317,21 +317,21 @@ const Step3 = () => {
                 </Typography>
                 <RadioGroup
                   row={!isMobile}
-                  value={techStackState.aiInterest}
+                  value={techStackState.hasSpecificTasks}
                   onChange={(e) =>
                     setTechStackState((prev) => ({
                       ...prev,
-                      aiInterest: e.target.value,
+                      hasSpecificTasks: e.target.value === "true",
                     }))
                   }
                 >
                   <FormControlLabel
-                    value="curious"
+                    value={true}
                     control={<Radio size={isMobile ? "small" : "medium"} />}
                     label="I have specific tasks I'd like to automate"
                   />
                   <FormControlLabel
-                    value="unsure"
+                    value={false}
                     control={<Radio size={isMobile ? "small" : "medium"} />}
                     label="I'm not sure where AI could help"
                   />
