@@ -8,11 +8,17 @@ import {
   useMediaQuery,
   Paper,
   Fade,
+  CircularProgress,
+  Link,
 } from "@mui/material";
 import { useFormContext } from "../../context/FormContext";
 import { FormLabel } from "../../utils/formComponents";
 import { isValidEmail, isValidVerificationCode } from "../../utils/validation";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+
+const MOJO_AUTH_API_KEY = process.env.REACT_APP_MOJO_AUTH_API_KEY;
+const MOJO_AUTH_BASE_URL = "https://api.mojoauth.com";
+const RESEND_COOLDOWN = 30; // 30 seconds cooldown for resend
 
 const Step2 = () => {
   const theme = useTheme();
@@ -31,7 +37,44 @@ const Step2 = () => {
     },
     showVerification: formData.step2?.showVerification || false,
     verified: formData.step2?.verified || false,
+    stateId: formData.step2?.stateId || "",
+    loading: false,
+    errors: {
+      email: "",
+      code: "",
+    },
+    resendCooldown: 0,
+    codeSent: false,
+    resendSuccess: false,
   });
+
+  // Handle resend cooldown timer
+  useEffect(() => {
+    let timer;
+    if (formState.resendCooldown > 0) {
+      timer = setInterval(() => {
+        setFormState((prev) => ({
+          ...prev,
+          resendCooldown: prev.resendCooldown - 1,
+        }));
+      }, 1000);
+    }
+    return () => clearInterval(timer);
+  }, [formState.resendCooldown]);
+
+  // Clear resend success message after 3 seconds
+  useEffect(() => {
+    let timer;
+    if (formState.resendSuccess) {
+      timer = setTimeout(() => {
+        setFormState((prev) => ({
+          ...prev,
+          resendSuccess: false,
+        }));
+      }, 3000);
+    }
+    return () => clearTimeout(timer);
+  }, [formState.resendSuccess]);
 
   // Update form context whenever states change
   useEffect(() => {
@@ -45,6 +88,7 @@ const Step2 = () => {
       code: formState.code,
       showVerification: formState.showVerification,
       verified: formState.verified,
+      stateId: formState.stateId,
       isValid: isEmailValid && isNameValid && isVerificationValid,
       isComplete: isEmailValid && isNameValid && isVerificationValid,
     });
@@ -54,6 +98,18 @@ const Step2 = () => {
     setFormState((prev) => ({
       ...prev,
       [field]: e.target.value,
+      errors: {
+        ...prev.errors,
+        [field]: "", // Clear error when user makes changes
+      },
+      // Reset verification state if email is changed
+      ...(field === "email" && {
+        showVerification: false,
+        verified: false,
+        code: "",
+        stateId: "",
+        codeSent: false,
+      }),
     }));
   };
 
@@ -68,18 +124,153 @@ const Step2 = () => {
   };
 
   const sendVerification = async () => {
-    setFormState((prev) => ({
-      ...prev,
-      showVerification: true,
-    }));
-    alert("Verification code sent (Demo: Use any code)");
+    try {
+      setFormState((prev) => ({
+        ...prev,
+        loading: true,
+        errors: {
+          ...prev.errors,
+          email: "",
+        },
+      }));
+
+      const response = await fetch(`${MOJO_AUTH_BASE_URL}/users/emailotp`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": MOJO_AUTH_API_KEY,
+        },
+        body: JSON.stringify({
+          email: formState.email,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Failed to send verification code");
+      }
+
+      setFormState((prev) => ({
+        ...prev,
+        showVerification: true,
+        stateId: data.state_id,
+        loading: false,
+        codeSent: true,
+        resendCooldown: RESEND_COOLDOWN,
+      }));
+    } catch (error) {
+      setFormState((prev) => ({
+        ...prev,
+        loading: false,
+        errors: {
+          ...prev.errors,
+          email: error.message || "Failed to send verification code",
+        },
+      }));
+    }
   };
 
   const verifyCode = async () => {
-    setFormState((prev) => ({
-      ...prev,
-      verified: true,
-    }));
+    try {
+      setFormState((prev) => ({
+        ...prev,
+        loading: true,
+        errors: {
+          ...prev.errors,
+          code: "",
+        },
+      }));
+
+      const formData = new URLSearchParams();
+      formData.append("OTP", formState.code);
+      formData.append("state_id", formState.stateId);
+
+      const response = await fetch(
+        `${MOJO_AUTH_BASE_URL}/users/emailotp/verify`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "x-api-key": MOJO_AUTH_API_KEY,
+          },
+          body: formData,
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Failed to verify code");
+      }
+
+      setFormState((prev) => ({
+        ...prev,
+        verified: true,
+        loading: false,
+      }));
+    } catch (error) {
+      setFormState((prev) => ({
+        ...prev,
+        loading: false,
+        errors: {
+          ...prev.errors,
+          code: error.message || "Invalid verification code",
+        },
+      }));
+    }
+  };
+
+  const resendCode = async () => {
+    if (formState.resendCooldown > 0) return;
+
+    try {
+      setFormState((prev) => ({
+        ...prev,
+        loading: true,
+        errors: {
+          ...prev.errors,
+          email: "",
+        },
+      }));
+
+      const response = await fetch(
+        `${MOJO_AUTH_BASE_URL}/users/emailotp/resend`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-api-key": MOJO_AUTH_API_KEY,
+          },
+          body: JSON.stringify({
+            state_id: formState.stateId,
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Failed to resend verification code");
+      }
+
+      setFormState((prev) => ({
+        ...prev,
+        loading: false,
+        codeSent: true,
+        resendCooldown: RESEND_COOLDOWN,
+        resendSuccess: true,
+      }));
+    } catch (error) {
+      setFormState((prev) => ({
+        ...prev,
+        loading: false,
+        errors: {
+          ...prev.errors,
+          email: error.message || "Failed to resend verification code",
+        },
+      }));
+    }
   };
 
   // Validation logic
@@ -90,13 +281,13 @@ const Step2 = () => {
     formState.isBlurred.email && !isValidEmail(formState.email);
   const emailErrorMessage = hasEmailError
     ? "Please enter a valid email address"
-    : "";
+    : formState.errors.email || "";
 
   const hasCodeError =
     formState.isBlurred.code && !isValidVerificationCode(formState.code);
   const codeErrorMessage = hasCodeError
     ? "Please enter a valid 6-digit verification code"
-    : "";
+    : formState.errors.code || "";
 
   return (
     <Box>
@@ -127,11 +318,55 @@ const Step2 = () => {
                 placeholder="Enter your full name"
                 error={hasNameError}
                 helperText={nameErrorMessage}
+                disabled={formState.loading}
               />
             </Box>
 
             <Box>
-              <FormLabel required>Work Email</FormLabel>
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  mb: 0.5,
+                }}
+              >
+                <FormLabel required>Work Email</FormLabel>
+                {formState.showVerification && (
+                  <Link
+                    component="button"
+                    variant="body2"
+                    onClick={() => {
+                      setFormState((prev) => ({
+                        ...prev,
+                        showVerification: false,
+                        verified: false,
+                        code: "",
+                        stateId: "",
+                        codeSent: false,
+                        errors: {
+                          email: "",
+                          code: "",
+                        },
+                        isBlurred: {
+                          ...prev.isBlurred,
+                          code: false,
+                        },
+                      }));
+                    }}
+                    sx={{
+                      textDecoration: "none",
+                      color: theme.palette.primary.main,
+                      cursor: "pointer",
+                      "&:hover": {
+                        textDecoration: "underline",
+                      },
+                    }}
+                  >
+                    Edit Email
+                  </Link>
+                )}
+              </Box>
               <TextField
                 fullWidth
                 type="email"
@@ -141,26 +376,32 @@ const Step2 = () => {
                 size={isMobile ? "small" : "medium"}
                 variant="outlined"
                 placeholder="Enter your work email address"
-                error={hasEmailError}
+                error={hasEmailError || !!formState.errors.email}
                 helperText={emailErrorMessage}
+                disabled={formState.loading || formState.showVerification}
               />
             </Box>
 
-            <Button
-              variant="contained"
-              onClick={sendVerification}
-              fullWidth
-              disabled={
-                !formState.email ||
-                !isValidEmail(formState.email) ||
-                !formState.name.trim()
-              }
-              sx={{ mt: 1 }}
-            >
-              Send Verification Code
-            </Button>
-
-            {formState.showVerification && (
+            {!formState.showVerification ? (
+              <Button
+                variant="contained"
+                onClick={sendVerification}
+                fullWidth
+                disabled={
+                  !formState.email ||
+                  !isValidEmail(formState.email) ||
+                  !formState.name.trim() ||
+                  formState.loading
+                }
+                sx={{ mt: 1 }}
+              >
+                {formState.loading ? (
+                  <CircularProgress size={24} color="inherit" />
+                ) : (
+                  "Send Verification Code"
+                )}
+              </Button>
+            ) : (
               <Fade in={formState.showVerification}>
                 <Box
                   sx={{
@@ -170,10 +411,46 @@ const Step2 = () => {
                     mt: 2,
                   }}
                 >
-                  <Typography variant="body2" color="text.secondary">
-                    We've sent a verification code to your email. Please enter
-                    it below.
-                  </Typography>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Typography variant="body2" color="text.secondary">
+                      {formState.resendSuccess
+                        ? "New verification code sent!"
+                        : formState.codeSent
+                        ? "Verification code sent to your email"
+                        : "We've sent a verification code to your email"}
+                    </Typography>
+                    <Link
+                      component="button"
+                      variant="body2"
+                      onClick={resendCode}
+                      disabled={
+                        formState.resendCooldown > 0 || formState.loading
+                      }
+                      sx={{
+                        textDecoration: "none",
+                        color:
+                          formState.resendCooldown > 0
+                            ? "text.disabled"
+                            : theme.palette.primary.main,
+                        cursor:
+                          formState.resendCooldown > 0 ? "default" : "pointer",
+                        "&:hover": {
+                          textDecoration:
+                            formState.resendCooldown > 0 ? "none" : "underline",
+                        },
+                      }}
+                    >
+                      {formState.resendCooldown > 0
+                        ? `Resend in ${formState.resendCooldown}s`
+                        : "Resend Code"}
+                    </Link>
+                  </Box>
 
                   <Box>
                     <FormLabel required>Verification Code</FormLabel>
@@ -181,17 +458,17 @@ const Step2 = () => {
                       fullWidth
                       value={formState.code}
                       onChange={handleChange("code")}
-                      onBlur={handleBlur("code")}
                       size={isMobile ? "small" : "medium"}
                       variant="outlined"
                       placeholder="Enter the 6-digit code"
-                      error={hasCodeError}
+                      error={hasCodeError || !!formState.errors.code}
                       helperText={codeErrorMessage}
                       inputProps={{
                         maxLength: 6,
                         pattern: "[0-9]*",
                         inputMode: "numeric",
                       }}
+                      disabled={formState.loading}
                     />
                   </Box>
 
@@ -199,9 +476,16 @@ const Step2 = () => {
                     variant="contained"
                     onClick={verifyCode}
                     fullWidth
-                    disabled={!isValidVerificationCode(formState.code)}
+                    disabled={
+                      !isValidVerificationCode(formState.code) ||
+                      formState.loading
+                    }
                   >
-                    Verify & Continue
+                    {formState.loading ? (
+                      <CircularProgress size={24} color="inherit" />
+                    ) : (
+                      "Verify & Continue"
+                    )}
                   </Button>
                 </Box>
               </Fade>
