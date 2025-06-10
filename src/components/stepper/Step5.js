@@ -60,7 +60,7 @@ const Step5 = () => {
         gutterBottom
         sx={{ mb: 1, textAlign: "center" }}
       >
-        Review Your Information
+        Analysis Results
       </Typography>
 
       {isSubmitting ? (
