@@ -15,6 +15,7 @@ export const formatFormData = (formData) => {
     contactInfo: {
       name: formData.step2?.name || null,
       email: formData.step2?.email || null,
+      code: formData.step2?.code || null,
     },
     businessInfo: {
       industry: formData.step1?.industry || null,
