@@ -1,23 +1,11 @@
 import React, { useEffect, useState } from "react";
-import {
-  Box,
-  Typography,
-  Grid,
-  Paper,
-  useTheme,
-  useMediaQuery,
-  Divider,
-  Tooltip,
-  CircularProgress,
-  Button,
-  Link,
-} from "@mui/material";
+import { Box, Typography, useTheme, useMediaQuery } from "@mui/material";
 import { useFormContext } from "../../context/FormContext";
-import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { formatFormData } from "../../services/formDataService";
 import { submitFormData } from "../../services/apiService";
-import RefreshIcon from "@mui/icons-material/Refresh";
-import ErrorIcon from "@mui/icons-material/Error";
+import ErrorComponent from "../ErrorComponent";
+import ResponseComponent from "../ResponseComponent";
+import LoaderComponent from "../LoaderComponent";
 
 const Step5 = () => {
   const theme = useTheme();
@@ -65,105 +53,6 @@ const Step5 = () => {
     handleSubmit();
   }, []);
 
-  const handleRetry = () => {
-    handleSubmit();
-  };
-
-  const renderError = () => {
-    if (!error) return null;
-
-    return (
-      <Box
-        elevation={0}
-        sx={{
-          p: 3,
-          maxWidth: 500,
-          mx: "auto",
-          textAlign: "center",
-          mt: 4,
-        }}
-      >
-        <ErrorIcon sx={{ fontSize: 48, mb: 2, color: "error.main" }} />
-        <Typography variant="h6" gutterBottom color="error" sx={{ mb: 2 }}>
-          {error.title}
-        </Typography>
-        <Typography variant="body1" sx={{ mb: 3, color: "text.secondary" }}>
-          {error.message}
-        </Typography>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            gap: 2,
-            alignItems: "center",
-          }}
-        >
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleRetry}
-            startIcon={<RefreshIcon />}
-            sx={{ minWidth: 200 }}
-          >
-            Try Again
-          </Button>
-          <Typography variant="body2" color="text.secondary">
-            Still having issues?{" "}
-            <Link
-              href="mailto:riviereaisolutions@gmail.com"
-              color="primary"
-              underline="hover"
-              sx={{ cursor: "pointer" }}
-            >
-              Contact Support
-            </Link>
-          </Typography>
-        </Box>
-      </Box>
-    );
-  };
-
-  const renderSection = (title, tooltip, content) => (
-    <Grid item xs={12}>
-      <Box elevation={0}>
-        <Typography
-          variant="h6"
-          gutterBottom
-          sx={{ display: "flex", alignItems: "center", gap: 1 }}
-        >
-          {title}
-          <Tooltip title={tooltip}>
-            <InfoOutlinedIcon fontSize="small" color="action" />
-          </Tooltip>
-        </Typography>
-        <Grid container spacing={2}>
-          <Grid item xs={12}>
-            {content}
-          </Grid>
-        </Grid>
-      </Box>
-    </Grid>
-  );
-
-  const renderResponseData = () => (
-    <Box sx={{ color: "text.secondary" }}>
-      <Paper
-        elevation={0}
-        sx={{
-          p: 2,
-          backgroundColor: "rgba(0, 0, 0, 0.02)",
-          borderRadius: 1,
-          overflow: "auto",
-          maxHeight: "400px",
-        }}
-      >
-        <pre style={{ margin: 0, whiteSpace: "pre-wrap" }}>
-          {JSON.stringify(responseData, null, 2)}
-        </pre>
-      </Paper>
-    </Box>
-  );
-
   return (
     <Box>
       <Typography
@@ -175,19 +64,11 @@ const Step5 = () => {
       </Typography>
 
       {isSubmitting ? (
-        <Box display="flex" justifyContent="center" my={4}>
-          <CircularProgress />
-        </Box>
+        <LoaderComponent />
       ) : error ? (
-        renderError()
+        <ErrorComponent error={error} onRetry={handleSubmit} />
       ) : (
-        <Grid container spacing={{ xs: 0, sm: 0 }}>
-          {renderSection(
-            "API Response",
-            "Response received from the server",
-            renderResponseData()
-          )}
-        </Grid>
+        <ResponseComponent responseData={responseData} />
       )}
 
       {!error && (
@@ -201,8 +82,8 @@ const Step5 = () => {
             px: { xs: 2, sm: 0 },
           }}
         >
-          By clicking next, you confirm that all the information provided is
-          accurate and complete.
+          By clicking next, you can book an appointment with us to discuss more
+          about this in detail.
         </Typography>
       )}
     </Box>
