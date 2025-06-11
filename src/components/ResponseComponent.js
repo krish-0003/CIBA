@@ -17,6 +17,7 @@ import BusinessIcon from "@mui/icons-material/Business";
 import ScheduleIcon from "@mui/icons-material/Schedule";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import BoltIcon from "@mui/icons-material/Bolt";
 import { alpha } from "@mui/material/styles";
 
 /**
@@ -101,6 +102,53 @@ const AnimatedBorderBox = ({
 };
 
 /**
+ * A reusable component that creates an animated gradient icon
+ */
+const AnimatedIcon = ({ Icon, gradientColors, animationDuration = 2 }) => {
+  const defaultGradientColors = {
+    primary: "rgba(64, 156, 255, 0.15)",
+    secondary: "rgba(88, 86, 214, 0.12)",
+    tertiary: "rgba(138, 43, 226, 0.08)",
+  };
+
+  const colors = gradientColors || defaultGradientColors;
+
+  return (
+    <Box
+      sx={{
+        display: "inline-flex",
+        alignItems: "center",
+        mr: 1,
+        "& svg": {
+          background: `linear-gradient(90deg, 
+            ${colors.primary},
+            ${colors.secondary},
+            ${colors.tertiary},
+            ${colors.primary})`,
+          backgroundSize: "300% 300%",
+          animation: `gradientRotate ${animationDuration}s linear infinite`,
+          WebkitBackgroundClip: "text",
+          WebkitTextFillColor: "transparent",
+          "@keyframes gradientRotate": {
+            "0%": {
+              backgroundPosition: "0% 50%",
+            },
+            "50%": {
+              backgroundPosition: "100% 50%",
+            },
+            "100%": {
+              backgroundPosition: "0% 50%",
+            },
+          },
+        },
+      }}
+    >
+      <Icon />
+    </Box>
+  );
+};
+
+/**
  * A reusable component for consistent section styling
  */
 const StyledSection = ({ title, tooltip, icon: Icon, children, sx = {} }) => {
@@ -159,7 +207,7 @@ const ResponseComponent = ({ responseData }) => {
       sx={{
         p: 2,
         borderRadius: 2,
-        backgroundColor: alpha("#1A1A1A", 0.04),
+        backgroundColor: alpha("#FFFFFF", 0.04),
       }}
     >
       <Grid container spacing={2}>
@@ -203,12 +251,12 @@ const ResponseComponent = ({ responseData }) => {
               defaultExpanded
               sx={{
                 mb: 2,
-                backgroundColor: alpha("#1A1A1A", 0.04),
+                backgroundColor: alpha("#FFFFFF", 0.1),
                 "&:last-child": {
                   mb: 0,
                 },
                 "& .MuiAccordionSummary-root": {
-                  minHeight: "48px",
+                  // minHeight: "48px",
                 },
                 "& .MuiAccordionSummary-content": {
                   margin: "8px 0",
@@ -228,7 +276,7 @@ const ResponseComponent = ({ responseData }) => {
                   color="text.secondary"
                   sx={{
                     fontWeight: 600,
-                    fontSize: { xs: "1.1rem", sm: "1.25rem" },
+                    fontSize: { xs: "0.95rem", sm: "1.25rem" },
                     display: "flex",
                     alignItems: "center",
                     gap: 1,
@@ -237,7 +285,7 @@ const ResponseComponent = ({ responseData }) => {
                   <Chip
                     label={index + 1}
                     size="small"
-                    color="primary"
+                    color="text.secondary"
                     sx={{
                       mr: 1,
                       minWidth: "28px",
@@ -284,8 +332,18 @@ const ResponseComponent = ({ responseData }) => {
                         fontWeight: 500,
                         fontSize: { xs: "1rem", sm: "1.1rem" },
                         mb: 1,
+                        display: "flex",
+                        alignItems: "center",
                       }}
                     >
+                      <AnimatedIcon
+                        Icon={BoltIcon}
+                        gradientColors={{
+                          primary: "rgba(64, 156, 255, 0.8)",
+                          secondary: "rgba(88, 86, 214, 0.7)",
+                          tertiary: "rgba(138, 43, 226, 0.6)",
+                        }}
+                      />
                       Recommended Action
                     </Typography>
                     <Typography
@@ -325,12 +383,12 @@ const ResponseComponent = ({ responseData }) => {
           defaultExpanded
           sx={{
             mb: 2,
-            backgroundColor: alpha("#1A1A1A", 0.04),
+            backgroundColor: alpha("#FFFFFF", 0.1),
             "&:last-child": {
               mb: 0,
             },
             "& .MuiAccordionSummary-root": {
-              minHeight: "48px",
+              // minHeight: "48px",
             },
             "& .MuiAccordionSummary-content": {
               margin: "8px 0",
@@ -350,7 +408,7 @@ const ResponseComponent = ({ responseData }) => {
               color="text.secondary"
               sx={{
                 fontWeight: 600,
-                fontSize: { xs: "1.1rem", sm: "1.25rem" },
+                fontSize: { xs: "0.95rem", sm: "1.25rem" },
                 display: "flex",
                 alignItems: "center",
                 gap: 1,
@@ -359,7 +417,7 @@ const ResponseComponent = ({ responseData }) => {
               <Chip
                 label={index + 1}
                 size="small"
-                color="primary"
+                color="text.secondary"
                 sx={{
                   mr: 1,
                   minWidth: "28px",
@@ -418,8 +476,18 @@ const ResponseComponent = ({ responseData }) => {
                     fontWeight: 500,
                     fontSize: { xs: "1rem", sm: "1.1rem" },
                     mb: 1,
+                    display: "flex",
+                    alignItems: "center",
                   }}
                 >
+                  <AnimatedIcon
+                    Icon={BoltIcon}
+                    gradientColors={{
+                      primary: "rgba(64, 156, 255, 0.8)",
+                      secondary: "rgba(88, 86, 214, 0.7)",
+                      tertiary: "rgba(138, 43, 226, 0.6)",
+                    }}
+                  />
                   Recommended Action
                 </Typography>
                 <Typography
@@ -446,7 +514,7 @@ const ResponseComponent = ({ responseData }) => {
                     mb: 1,
                   }}
                 >
-                  Potential Savings
+                  Potential Monthly Savings
                 </Typography>
                 <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}>
                   <Chip
@@ -539,7 +607,7 @@ const ResponseComponent = ({ responseData }) => {
               />
               <Chip
                 icon={<AttachMoneyIcon />}
-                label={`$${totalSavings.savings} Cost Saved`}
+                label={`${totalSavings.savings} Cost Saved`}
                 size="medium"
                 sx={{
                   borderRadius: "24px",
