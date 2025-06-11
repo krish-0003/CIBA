@@ -19,6 +19,12 @@ const Step5 = () => {
     try {
       setIsSubmitting(true);
       setError(null);
+
+      // Validate if formData exists
+      if (!formData) {
+        throw new Error("Form data is missing");
+      }
+
       const formattedData = formatFormData(formData);
       console.log("Formatted Form Data:", formattedData);
 
@@ -37,7 +43,9 @@ const Step5 = () => {
       setError({
         title: "We're Having Trouble Processing Your Request",
         message:
-          "This might be due to a temporary connection issue or server maintenance. Please try again in a moment.",
+          err.message === "Form data is missing"
+            ? "Unable to process your request. Please try again."
+            : "This might be due to a temporary connection issue or server maintenance. Please try again in a moment.",
       });
       updateFormData("step5", {
         isValid: false,
