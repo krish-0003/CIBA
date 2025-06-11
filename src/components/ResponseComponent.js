@@ -299,18 +299,18 @@ const ResponseComponent = ({ responseData }) => {
             },
           }}
         >
-          <Typography
-            variant="h6"
-            color="text.secondary"
-            gutterBottom
-            sx={{
-              fontWeight: 600,
-              fontSize: "1.25rem",
-              mb: 1.5,
-            }}
-          >
-            {task.task}
-          </Typography>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1.5 }}>
+            <Typography
+              variant="h6"
+              color="text.secondary"
+              sx={{
+                fontWeight: 600,
+                fontSize: "1.25rem",
+              }}
+            >
+              {task.task}
+            </Typography>
+          </Box>
           <Typography
             variant="body1"
             color="text.secondary"
@@ -371,6 +371,46 @@ const ResponseComponent = ({ responseData }) => {
               </Typography>
             </AnimatedBorderBox>
           )}
+          {task.total_savings && (
+            <Box sx={{ mt: 2 }}>
+              <Typography
+                variant="subtitle1"
+                color="primary"
+                gutterBottom
+                sx={{
+                  fontWeight: 500,
+                  fontSize: "1.1rem",
+                  mb: 1,
+                }}
+              >
+                Potential Savings
+              </Typography>
+              <Box sx={{ display: "flex", gap: 2, flexWrap: "wrap" }}>
+                <Chip
+                  icon={<ScheduleIcon />}
+                  label={`${task.total_savings.time_saved} Hours Saved`}
+                  size="small"
+                  color="primary"
+                  variant="outlined"
+                  sx={{
+                    borderRadius: "16px",
+                    borderWidth: "2px",
+                  }}
+                />
+                <Chip
+                  icon={<AttachMoneyIcon />}
+                  label={`$${task.total_savings.savings} Cost Saved`}
+                  size="small"
+                  color="primary"
+                  variant="outlined"
+                  sx={{
+                    borderRadius: "16px",
+                    borderWidth: "2px",
+                  }}
+                />
+              </Box>
+            </Box>
+          )}
         </Box>
       </Fade>
     ));
@@ -380,51 +420,79 @@ const ResponseComponent = ({ responseData }) => {
     if (!totalSavings) return null;
     return (
       <Fade in timeout={500}>
-        <Box
-          sx={{
-            p: 2,
-            borderRadius: 2,
-            backgroundColor: alpha("#1A1A1A", 0.04),
-          }}
-        >
-          <Grid container spacing={2}>
-            <Grid item xs={12} sm={6}>
-              <Box
+        <Box sx={{ mt: 4, mb: 2, maxWidth: "600px", mx: "auto" }}>
+          <AnimatedBorderBox
+            gradientColors={{
+              primary: "rgba(64, 156, 255, 0.3)",
+              secondary: "rgba(88, 86, 214, 0.25)",
+              tertiary: "rgba(138, 43, 226, 0.2)",
+            }}
+            borderThickness={3}
+            sx={{ p: 4 }}
+          >
+            <Typography
+              variant="h5"
+              color="primary"
+              gutterBottom
+              sx={{
+                fontWeight: 700,
+                fontSize: "1.5rem",
+                mb: 3,
+                textAlign: "center",
+              }}
+            >
+              Total Potential Savings (Monthly)
+            </Typography>
+            <Box
+              sx={{
+                display: "flex",
+                gap: 4,
+                flexWrap: "wrap",
+                justifyContent: "center",
+              }}
+            >
+              <Chip
+                icon={<ScheduleIcon />}
+                label={`${totalSavings.time_saved} Hours Saved`}
+                size="medium"
                 sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 1,
-                  p: 1.5,
-                  borderRadius: 1,
+                  borderRadius: "24px",
                   backgroundColor: "white",
-                  boxShadow: "0 2px 4px rgba(0,0,0,0.05)",
+                  color: "primary.main",
+                  border: "2px solid",
+                  borderColor: "primary.main",
+                  fontSize: "1.1rem",
+                  fontWeight: 600,
+                  height: "48px",
+                  px: 2,
+                  "& .MuiChip-icon": {
+                    color: "primary.main",
+                    fontSize: "1.5rem",
+                  },
                 }}
-              >
-                <ScheduleIcon color="primary" />
-                <Typography variant="h6" sx={{ fontWeight: 500 }}>
-                  {totalSavings.time_saved} hours
-                </Typography>
-              </Box>
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <Box
+              />
+              <Chip
+                icon={<AttachMoneyIcon />}
+                label={`$${totalSavings.savings} Cost Saved`}
+                size="medium"
                 sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 1,
-                  p: 1.5,
-                  borderRadius: 1,
+                  borderRadius: "24px",
                   backgroundColor: "white",
-                  boxShadow: "0 2px 4px rgba(0,0,0,0.05)",
+                  color: "primary.main",
+                  border: "2px solid",
+                  borderColor: "primary.main",
+                  fontSize: "1.1rem",
+                  fontWeight: 600,
+                  height: "48px",
+                  px: 2,
+                  "& .MuiChip-icon": {
+                    color: "primary.main",
+                    fontSize: "1.5rem",
+                  },
                 }}
-              >
-                <AttachMoneyIcon color="primary" />
-                <Typography variant="h6" sx={{ fontWeight: 500 }}>
-                  ${totalSavings.savings}
-                </Typography>
-              </Box>
-            </Grid>
-          </Grid>
+              />
+            </Box>
+          </AnimatedBorderBox>
         </Box>
       </Fade>
     );
@@ -462,14 +530,8 @@ const ResponseComponent = ({ responseData }) => {
           {renderCustomTasks(responseData.data.custom_tasks_analysis)}
         </StyledSection>
 
-        {responseData.data.total_savings && (
-          <StyledSection
-            title="Total Savings"
-            tooltip="Overall potential savings from automation"
-          >
-            {renderTotalSavings(responseData.data.total_savings)}
-          </StyledSection>
-        )}
+        {responseData.data.total_savings &&
+          renderTotalSavings(responseData.data.total_savings)}
       </Grid>
     </Box>
   );
