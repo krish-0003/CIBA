@@ -8,11 +8,15 @@ import {
   Divider,
   Chip,
   Fade,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
 } from "@mui/material";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import BusinessIcon from "@mui/icons-material/Business";
 import ScheduleIcon from "@mui/icons-material/Schedule";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { alpha } from "@mui/material/styles";
 
 /**
@@ -53,28 +57,27 @@ const AnimatedBorderBox = ({
         "&::before": {
           content: '""',
           position: "absolute",
-          top: -borderThickness,
-          left: -borderThickness,
-          right: -borderThickness,
-          bottom: -borderThickness,
-          borderRadius: 5,
+          inset: -borderThickness,
+          borderRadius: `calc(12px + ${borderThickness}px)`,
+          padding: borderThickness,
           background: `linear-gradient(90deg, 
             ${colors.primary},
             ${colors.secondary},
             ${colors.tertiary},
             ${colors.primary})`,
-          backgroundSize: "400% 400%",
+          backgroundSize: "300% 300%",
+          WebkitMask:
+            "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
+          WebkitMaskComposite: "xor",
+          mask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
+          maskComposite: "exclude",
           animation: `gradientRotate ${animationDuration}s linear infinite`,
           zIndex: -1,
-          filter: "brightness(1.2)",
         },
         "&::after": {
           content: '""',
           position: "absolute",
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
+          inset: 0,
           borderRadius: 3,
           background: "#FFFFFF",
           zIndex: -1,
@@ -196,79 +199,109 @@ const ResponseComponent = ({ responseData }) => {
       <Box>
         {painPoints.map((point, index) => (
           <Fade in timeout={500} key={index}>
-            <Box
+            <Accordion
+              defaultExpanded
               sx={{
-                mb: 3,
-                p: 2,
-                borderRadius: 2,
+                mb: 2,
                 backgroundColor: alpha("#1A1A1A", 0.04),
                 "&:last-child": {
                   mb: 0,
                 },
+                "& .MuiAccordionSummary-root": {
+                  minHeight: "48px",
+                },
+                "& .MuiAccordionSummary-content": {
+                  margin: "8px 0",
+                },
               }}
             >
-              <Typography
-                variant="h6"
-                color="text.secondary"
-                gutterBottom
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
                 sx={{
-                  fontWeight: 600,
-                  fontSize: "1.25rem",
-                  mb: 1.5,
+                  "& .MuiAccordionSummary-content": {
+                    margin: "8px 0",
+                  },
                 }}
               >
-                {point.pain_point}
-              </Typography>
-              <Box sx={{ mb: 1.5 }}>
                 <Typography
-                  variant="subtitle1"
-                  color="primary"
-                  gutterBottom
+                  variant="h6"
+                  color="text.secondary"
                   sx={{
-                    fontWeight: 500,
-                    fontSize: "1.1rem",
-                    mb: 1,
+                    fontWeight: 600,
+                    fontSize: { xs: "1.1rem", sm: "1.25rem" },
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 1,
                   }}
                 >
-                  Automation Suggestion
+                  <Chip
+                    label={index + 1}
+                    size="small"
+                    color="primary"
+                    sx={{
+                      mr: 1,
+                      minWidth: "28px",
+                      height: "28px",
+                      borderRadius: "8px",
+                    }}
+                  />
+                  {point.pain_point}
                 </Typography>
-                <Typography
-                  variant="body1"
-                  paragraph
-                  sx={{
-                    color: "text.primary",
-                    lineHeight: 1.6,
-                  }}
-                >
-                  {point.automation_suggestion}
-                </Typography>
-              </Box>
-              {point.refined_custom_call_action && (
-                <AnimatedBorderBox>
+              </AccordionSummary>
+              <AccordionDetails sx={{ pt: 0 }}>
+                <Box sx={{ mb: 1.5 }}>
                   <Typography
                     variant="subtitle1"
                     color="primary"
                     gutterBottom
                     sx={{
                       fontWeight: 500,
-                      fontSize: "1.1rem",
+                      fontSize: { xs: "1rem", sm: "1.1rem" },
                       mb: 1,
                     }}
                   >
-                    Recommended Action
+                    Automation Suggestion
                   </Typography>
                   <Typography
                     variant="body1"
+                    paragraph
                     sx={{
                       color: "text.primary",
                       lineHeight: 1.6,
+                      fontSize: { xs: "0.9rem", sm: "1rem" },
                     }}
                   >
-                    {point.refined_custom_call_action}
+                    {point.automation_suggestion}
                   </Typography>
-                </AnimatedBorderBox>
-              )}
-            </Box>
+                </Box>
+                {point.refined_custom_call_action && (
+                  <AnimatedBorderBox>
+                    <Typography
+                      variant="subtitle1"
+                      color="primary"
+                      gutterBottom
+                      sx={{
+                        fontWeight: 500,
+                        fontSize: { xs: "1rem", sm: "1.1rem" },
+                        mb: 1,
+                      }}
+                    >
+                      Recommended Action
+                    </Typography>
+                    <Typography
+                      variant="body1"
+                      sx={{
+                        color: "text.primary",
+                        lineHeight: 1.6,
+                        fontSize: { xs: "0.9rem", sm: "1rem" },
+                      }}
+                    >
+                      {point.refined_custom_call_action}
+                    </Typography>
+                  </AnimatedBorderBox>
+                )}
+              </AccordionDetails>
+            </Accordion>
           </Fade>
         ))}
       </Box>
@@ -288,130 +321,163 @@ const ResponseComponent = ({ responseData }) => {
     }
     return customTasks.map((task, index) => (
       <Fade in timeout={500} key={index}>
-        <Box
+        <Accordion
+          defaultExpanded
           sx={{
-            mb: 3,
-            p: 2,
-            borderRadius: 2,
+            mb: 2,
             backgroundColor: alpha("#1A1A1A", 0.04),
             "&:last-child": {
               mb: 0,
             },
+            "& .MuiAccordionSummary-root": {
+              minHeight: "48px",
+            },
+            "& .MuiAccordionSummary-content": {
+              margin: "8px 0",
+            },
           }}
         >
-          <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1.5 }}>
+          <AccordionSummary
+            expandIcon={<ExpandMoreIcon />}
+            sx={{
+              "& .MuiAccordionSummary-content": {
+                margin: "8px 0",
+              },
+            }}
+          >
             <Typography
               variant="h6"
               color="text.secondary"
               sx={{
                 fontWeight: 600,
-                fontSize: "1.25rem",
+                fontSize: { xs: "1.1rem", sm: "1.25rem" },
+                display: "flex",
+                alignItems: "center",
+                gap: 1,
               }}
             >
+              <Chip
+                label={index + 1}
+                size="small"
+                color="primary"
+                sx={{
+                  mr: 1,
+                  minWidth: "28px",
+                  height: "28px",
+                  borderRadius: "8px",
+                }}
+              />
               {task.task}
             </Typography>
-          </Box>
-          <Typography
-            variant="body1"
-            color="text.secondary"
-            paragraph
-            sx={{
-              lineHeight: 1.6,
-              mb: 1.5,
-            }}
-          >
-            {task.description}
-          </Typography>
-          <Box sx={{ mb: 1.5 }}>
-            <Typography
-              variant="subtitle1"
-              color="primary"
-              gutterBottom
-              sx={{
-                fontWeight: 500,
-                fontSize: "1.1rem",
-                mb: 1,
-              }}
-            >
-              Automation Suggestion
-            </Typography>
+          </AccordionSummary>
+          <AccordionDetails sx={{ pt: 0 }}>
             <Typography
               variant="body1"
+              color="text.secondary"
               paragraph
               sx={{
-                color: "text.primary",
                 lineHeight: 1.6,
+                mb: 1.5,
+                fontSize: { xs: "0.9rem", sm: "1rem" },
               }}
             >
-              {task.automation_suggestion}
+              {task.description}
             </Typography>
-          </Box>
-          {task.refined_custom_call_action && (
-            <AnimatedBorderBox>
+            <Box sx={{ mb: 1.5 }}>
               <Typography
                 variant="subtitle1"
                 color="primary"
                 gutterBottom
                 sx={{
                   fontWeight: 500,
-                  fontSize: "1.1rem",
+                  fontSize: { xs: "1rem", sm: "1.1rem" },
                   mb: 1,
                 }}
               >
-                Recommended Action
+                Automation Suggestion
               </Typography>
               <Typography
                 variant="body1"
+                paragraph
                 sx={{
                   color: "text.primary",
                   lineHeight: 1.6,
+                  fontSize: { xs: "0.9rem", sm: "1rem" },
                 }}
               >
-                {task.refined_custom_call_action}
+                {task.automation_suggestion}
               </Typography>
-            </AnimatedBorderBox>
-          )}
-          {task.total_savings && (
-            <Box sx={{ mt: 2 }}>
-              <Typography
-                variant="subtitle1"
-                color="primary"
-                gutterBottom
-                sx={{
-                  fontWeight: 500,
-                  fontSize: "1.1rem",
-                  mb: 1,
-                }}
-              >
-                Potential Savings
-              </Typography>
-              <Box sx={{ display: "flex", gap: 2, flexWrap: "wrap" }}>
-                <Chip
-                  icon={<ScheduleIcon />}
-                  label={`${task.total_savings.time_saved} Hours Saved`}
-                  size="small"
-                  color="primary"
-                  variant="outlined"
-                  sx={{
-                    borderRadius: "16px",
-                    borderWidth: "2px",
-                  }}
-                />
-                <Chip
-                  icon={<AttachMoneyIcon />}
-                  label={`$${task.total_savings.savings} Cost Saved`}
-                  size="small"
-                  color="primary"
-                  variant="outlined"
-                  sx={{
-                    borderRadius: "16px",
-                    borderWidth: "2px",
-                  }}
-                />
-              </Box>
             </Box>
-          )}
-        </Box>
+            {task.refined_custom_call_action && (
+              <AnimatedBorderBox>
+                <Typography
+                  variant="subtitle1"
+                  color="primary"
+                  gutterBottom
+                  sx={{
+                    fontWeight: 500,
+                    fontSize: { xs: "1rem", sm: "1.1rem" },
+                    mb: 1,
+                  }}
+                >
+                  Recommended Action
+                </Typography>
+                <Typography
+                  variant="body1"
+                  sx={{
+                    color: "text.primary",
+                    lineHeight: 1.6,
+                    fontSize: { xs: "0.9rem", sm: "1rem" },
+                  }}
+                >
+                  {task.refined_custom_call_action}
+                </Typography>
+              </AnimatedBorderBox>
+            )}
+            {task.total_savings && (
+              <Box sx={{ mt: 2 }}>
+                <Typography
+                  variant="subtitle1"
+                  color="primary"
+                  gutterBottom
+                  sx={{
+                    fontWeight: 500,
+                    fontSize: { xs: "1rem", sm: "1.1rem" },
+                    mb: 1,
+                  }}
+                >
+                  Potential Savings
+                </Typography>
+                <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}>
+                  <Chip
+                    icon={<ScheduleIcon />}
+                    label={`${task.total_savings.time_saved} Hours Saved`}
+                    size="small"
+                    color="primary"
+                    variant="outlined"
+                    sx={{
+                      borderRadius: "16px",
+                      borderWidth: "2px",
+                      fontSize: { xs: "0.8rem", sm: "0.875rem" },
+                    }}
+                  />
+                  <Chip
+                    icon={<AttachMoneyIcon />}
+                    label={`$${task.total_savings.savings} Cost Saved`}
+                    size="small"
+                    color="primary"
+                    variant="outlined"
+                    sx={{
+                      borderRadius: "16px",
+                      borderWidth: "2px",
+                      fontSize: { xs: "0.8rem", sm: "0.875rem" },
+                    }}
+                  />
+                </Box>
+              </Box>
+            )}
+          </AccordionDetails>
+        </Accordion>
       </Fade>
     ));
   };
@@ -523,14 +589,19 @@ const ResponseComponent = ({ responseData }) => {
           {renderPainPoints(responseData.data.pain_points_analysis)}
         </StyledSection>
 
-        <StyledSection
-          title="Custom Tasks Analysis"
-          tooltip="Analysis of specific tasks you want to automate"
-        >
-          {renderCustomTasks(responseData.data.custom_tasks_analysis)}
-        </StyledSection>
+        {responseData.data.custom_tasks_analysis &&
+          responseData.data.custom_tasks_analysis.length > 0 && (
+            <StyledSection
+              title="Custom Tasks Analysis"
+              tooltip="Analysis of specific tasks you want to automate"
+            >
+              {renderCustomTasks(responseData.data.custom_tasks_analysis)}
+            </StyledSection>
+          )}
 
-        {responseData.data.total_savings &&
+        {responseData.data.custom_tasks_analysis &&
+          responseData.data.custom_tasks_analysis.length > 0 &&
+          responseData.data.total_savings &&
           renderTotalSavings(responseData.data.total_savings)}
       </Grid>
     </Box>
