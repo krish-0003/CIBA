@@ -37,7 +37,6 @@ Email: ${formData.step2?.email || "Not provided"}`,
         title: "Market Analysis",
         content: `Business Description: ${formData.step3?.description || "Not provided"}
 Employee Count: ${formData.step3?.employeeCount || "Not provided"}
-Pain Points: ${formData.step3?.painPoints?.join(", ") || "Not provided"}
 Current Tech Stack: ${formData.step3?.currentStack || "Not provided"}
 Tools Used: ${formData.step3?.tools?.join(", ") || "Not provided"}`,
       },
