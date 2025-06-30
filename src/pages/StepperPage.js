@@ -220,6 +220,9 @@ const StepperContent = () => {
               "& .MuiStepLabel-label": {
                 fontSize: "0.875rem",
               },
+              "& .Mui-completed .MuiStepIcon-root": {
+                color: (theme) => theme.palette.success.main,
+              },
             }}
           >
             {displaySteps.map((label) => (
