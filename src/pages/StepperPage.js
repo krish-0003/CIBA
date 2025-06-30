@@ -312,32 +312,34 @@ const StepperContent = () => {
                 </Box>
               )}
               {getStepContent(activeStep)}
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  mt: 3,
-                  pt: 2,
-                  borderTop: 1,
-                  borderColor: "divider",
-                }}
-              >
-                <Button
-                  disabled={activeStep === 0}
-                  onClick={handleBack}
-                  startIcon={<ArrowBackIcon />}
+              {activeStep !== 0 && (
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    mt: 3,
+                    pt: 2,
+                    borderTop: 1,
+                    borderColor: "divider",
+                  }}
                 >
-                  Back
-                </Button>
-                <Button
-                  variant="contained"
-                  onClick={handleNext}
-                  endIcon={<ArrowForwardIcon />}
-                  disabled={!isStepValid(activeStep)}
-                >
-                  {activeStep === steps.length - 1 ? "Finish" : "Next"}
-                </Button>
-              </Box>
+                  <Button
+                    disabled={activeStep === 0}
+                    onClick={handleBack}
+                    startIcon={<ArrowBackIcon />}
+                  >
+                    Back
+                  </Button>
+                  <Button
+                    variant="contained"
+                    onClick={handleNext}
+                    endIcon={<ArrowForwardIcon />}
+                    disabled={!isStepValid(activeStep)}
+                  >
+                    {activeStep === steps.length - 1 ? "Finish" : "Next"}
+                  </Button>
+                </Box>
+              )}
             </>
           )}
         </Box>
