@@ -18,7 +18,7 @@ const industryOptions = [
   { display: "Real Estate", value: "REAL_ESTATE" },
   { display: "Accounting", value: "ACCOUNTING" },
   { display: "Human Resources", value: "HR" },
-  { display: "Industrial", value: "INDUSTRIAL" },
+  // { display: "Industrial", value: "INDUSTRIAL" },
   { display: "Insurance", value: "INSURANCE" },
   { display: "Logistics and Transportation", value: "LOGISTICS" },
   { display: "Manufacturing", value: "MANUFACTURING" },
