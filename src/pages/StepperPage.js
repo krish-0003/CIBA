@@ -146,7 +146,7 @@ const StepperContent = () => {
       case 4:
         return <Step4 />;
       case 5:
-        return <Step5 />;
+        return <Step5 onNext={handleNext} />;
       case 6:
         return <Step6 />;
       default:

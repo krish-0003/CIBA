@@ -11,6 +11,12 @@ const LoaderComponent = () => {
     "Almost there...",
     "Preparing your response...",
     "Just a moment...",
+    "Analyzing your request...",
+    "Gathering insights...",
+    "Compiling results...",
+    "Finalizing your data...",
+    "Almost ready...",
+    "One more moment...",
   ];
 
   const [messageIndex, setMessageIndex] = useState(0);
@@ -21,7 +27,7 @@ const LoaderComponent = () => {
     const interval = setInterval(() => {
       setMessageIndex((prevIndex) => (prevIndex + 1) % loadingMessages.length);
       setIsTyping(true);
-    }, 4000);
+    }, 6000);
 
     return () => clearInterval(interval);
   }, []);
