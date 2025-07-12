@@ -11,141 +11,69 @@ import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
+  Link,
+  Button,
 } from "@mui/material";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import BusinessIcon from "@mui/icons-material/Business";
 import ScheduleIcon from "@mui/icons-material/Schedule";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import BoltIcon from "@mui/icons-material/Bolt";
-import { alpha } from "@mui/material/styles";
+import { themeStyles } from "../config/theme";
+import FactoryIcon from "@mui/icons-material/Factory";
+import GroupIcon from "@mui/icons-material/Group";
 
-/**
- * A reusable component that creates a box with an animated gradient border
- * @param {Object} props
- * @param {React.ReactNode} props.children - The content to be displayed inside the box
- * @param {Object} [props.gradientColors] - Optional custom gradient colors
- * @param {string} [props.gradientColors.primary] - Primary gradient color
- * @param {string} [props.gradientColors.secondary] - Secondary gradient color
- * @param {string} [props.gradientColors.tertiary] - Tertiary gradient color
- * @param {Object} [props.sx] - Additional styles to be applied to the box
- * @param {number} [props.borderThickness=4] - Thickness of the border in pixels
- * @param {number} [props.animationDuration=2] - Duration of the animation in seconds
- */
-const AnimatedBorderBox = ({
-  children,
-  gradientColors,
-  sx = {},
-  borderThickness = 4,
-  animationDuration = 2,
-}) => {
-  const defaultGradientColors = {
-    primary: "rgba(64, 156, 255, 0.15)",
-    secondary: "rgba(88, 86, 214, 0.12)",
-    tertiary: "rgba(138, 43, 226, 0.08)",
-  };
-
-  const colors = gradientColors || defaultGradientColors;
-
-  return (
-    <Box
-      sx={{
-        mt: 2,
-        p: 2,
-        borderRadius: 3,
-        position: "relative",
-        ...sx,
-        "&::before": {
-          content: '""',
-          position: "absolute",
-          inset: -borderThickness,
-          borderRadius: `calc(12px + ${borderThickness}px)`,
-          padding: borderThickness,
-          background: `linear-gradient(90deg, 
-            ${colors.primary},
-            ${colors.secondary},
-            ${colors.tertiary},
-            ${colors.primary})`,
-          backgroundSize: "300% 300%",
-          WebkitMask:
-            "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
-          WebkitMaskComposite: "xor",
-          mask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
-          maskComposite: "exclude",
-          animation: `gradientRotate ${animationDuration}s linear infinite`,
-          zIndex: -1,
-        },
-        "&::after": {
-          content: '""',
-          position: "absolute",
-          inset: 0,
-          borderRadius: 3,
-          background: "#FFFFFF",
-          zIndex: -1,
-        },
-        "@keyframes gradientRotate": {
-          "0%": {
-            backgroundPosition: "0% 50%",
-          },
-          "50%": {
-            backgroundPosition: "100% 50%",
-          },
-          "100%": {
-            backgroundPosition: "0% 50%",
-          },
-        },
-      }}
-    >
-      {children}
-    </Box>
-  );
+// Reusable styling objects
+const cardStyles = {
+  p: { xs: 1.5, sm: 2 },
+  borderRadius: 3,
+  background:
+    "linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.04) 100%)",
+  border: "1px solid rgba(0, 0, 0, 0.15)",
+  position: "relative",
+  overflow: "hidden",
+  "&::before": {
+    content: '""',
+    position: "absolute",
+    top: 0,
+    left: 0,
+    width: "4px",
+    height: "100%",
+    background: "linear-gradient(180deg, #409CFF, #8A2BE2)",
+  },
 };
 
-/**
- * A reusable component that creates an animated gradient icon
- */
-const AnimatedIcon = ({ Icon, gradientColors, animationDuration = 2 }) => {
-  const defaultGradientColors = {
-    primary: "rgba(64, 156, 255, 0.15)",
-    secondary: "rgba(88, 86, 214, 0.12)",
-    tertiary: "rgba(138, 43, 226, 0.08)",
-  };
+const sectionHeaderStyles = {
+  display: "flex",
+  alignItems: "center",
+  mb: 2,
+  p: { xs: 1, sm: 1.5 },
+  borderRadius: 2,
+  background:
+    "linear-gradient(135deg, rgba(64, 156, 255, 0.15) 0%, rgba(138, 43, 226, 0.15) 100%)",
+  border: "1px solid rgba(64, 156, 255, 0.3)",
+};
 
-  const colors = gradientColors || defaultGradientColors;
+const titleStyles = {
+  color: "primary.main",
+  fontWeight: 700,
+  fontSize: { xs: "1.2rem", sm: "1.4rem" },
+};
 
-  return (
-    <Box
-      sx={{
-        display: "inline-flex",
-        alignItems: "center",
-        mr: 1,
-        "& svg": {
-          background: `linear-gradient(90deg, 
-            ${colors.primary},
-            ${colors.secondary},
-            ${colors.tertiary},
-            ${colors.primary})`,
-          backgroundSize: "300% 300%",
-          animation: `gradientRotate ${animationDuration}s linear infinite`,
-          WebkitBackgroundClip: "text",
-          WebkitTextFillColor: "transparent",
-          "@keyframes gradientRotate": {
-            "0%": {
-              backgroundPosition: "0% 50%",
-            },
-            "50%": {
-              backgroundPosition: "100% 50%",
-            },
-            "100%": {
-              backgroundPosition: "0% 50%",
-            },
-          },
-        },
-      }}
-    >
-      <Icon />
-    </Box>
-  );
+const iconStyles = {
+  color: "primary.main",
+  mr: 1,
+  fontSize: "1.8rem",
+};
+
+const contentStyles = {
+  pl: 2,
+};
+
+const textStyles = {
+  fontSize: themeStyles.bodyFontSize,
+  color: "text.primary",
+  lineHeight: 1.6,
 };
 
 /**
@@ -155,28 +83,9 @@ const StyledSection = ({ title, tooltip, icon: Icon, children, sx = {} }) => {
   return (
     <Grid item xs={12}>
       <Box elevation={0} sx={{ ...sx }}>
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            gap: 1,
-            mb: 1.5,
-            pb: 1,
-            borderBottom: "2px solid",
-            borderColor: "primary.light",
-          }}
-        >
-          {Icon && <Icon color="primary" />}
-          <Typography
-            variant="h6"
-            sx={{
-              color: "primary.main",
-              fontWeight: "bold",
-              display: "flex",
-              alignItems: "center",
-              gap: 1,
-            }}
-          >
+        <Box sx={sectionHeaderStyles}>
+          {Icon && <Icon sx={iconStyles} />}
+          <Typography variant="h5" sx={titleStyles}>
             {title}
             {tooltip && (
               <Tooltip title={tooltip}>
@@ -185,7 +94,7 @@ const StyledSection = ({ title, tooltip, icon: Icon, children, sx = {} }) => {
             )}
           </Typography>
         </Box>
-        <Grid container spacing={1.5}>
+        <Grid container spacing={1}>
           <Grid item xs={12}>
             {children}
           </Grid>
@@ -195,483 +104,769 @@ const StyledSection = ({ title, tooltip, icon: Icon, children, sx = {} }) => {
   );
 };
 
-const ResponseComponent = ({ responseData }) => {
-  const gradientColors = {
-    primary: "rgba(64, 156, 255, 0.15)",
-    secondary: "rgba(88, 86, 214, 0.12)",
-    tertiary: "rgba(138, 43, 226, 0.08)",
-  };
+/**
+ * Reusable card component
+ */
+const StyledCard = ({ children, fadeTimeout = 500 }) => (
+  <Fade in timeout={fadeTimeout}>
+    <Box sx={cardStyles}>
+      <Box sx={contentStyles}>{children}</Box>
+    </Box>
+  </Fade>
+);
 
-  const renderBusinessInfo = (businessInfo) => (
+/**
+ * Reusable info card component
+ */
+const InfoCard = ({ icon: Icon, title, content, fadeTimeout = 500 }) => (
+  <StyledCard fadeTimeout={fadeTimeout}>
+    <Box sx={{ display: "flex", alignItems: "center", mb: 1.5 }}>
+      <Icon sx={{ color: "primary.main", mr: 1, fontSize: "1.5rem" }} />
+      <Typography
+        variant="h6"
+        sx={{
+          color: "primary.main",
+          fontWeight: 700,
+          fontSize: themeStyles.titleFontSize,
+        }}
+      >
+        {title}
+      </Typography>
+    </Box>
+    <Typography
+      variant="body1"
+      sx={{ ...textStyles, fontWeight: 500, pl: 2.5 }}
+    >
+      {content}
+    </Typography>
+  </StyledCard>
+);
+
+// Utility function to normalize links to an array
+const getCaseStudyLinks = (link) => {
+  if (!link) return [];
+  if (Array.isArray(link)) return link;
+  return [link];
+};
+
+// Reusable component for rendering case study chips
+const CaseStudyChips = ({ links }) => {
+  const normalizedLinks = getCaseStudyLinks(links);
+  if (normalizedLinks.length === 0) return null;
+  return (
     <Box
+      component="span"
       sx={{
-        p: 2,
-        borderRadius: 2,
-        backgroundColor: alpha("#FFFFFF", 0.04),
+        ml: 1,
+        display: "inline-flex",
+        alignItems: "center",
+        gap: 0.5,
+        verticalAlign: "middle",
       }}
     >
-      <Grid container spacing={2}>
-        <Grid item xs={12} md={4}>
-          <Typography variant="subtitle1" color="primary" gutterBottom>
-            Industry
-          </Typography>
-          <Typography variant="body1" sx={{ textTransform: "capitalize" }}>
-            {businessInfo.industry}
-          </Typography>
-        </Grid>
-        <Grid item xs={12} md={4}>
-          <Typography variant="subtitle1" color="primary" gutterBottom>
-            Employee Count
-          </Typography>
-          <Typography variant="body1">{businessInfo.employee_count}</Typography>
-        </Grid>
-        <Grid item xs={12}>
-          <Typography variant="subtitle1" color="primary" gutterBottom>
-            Description
-          </Typography>
-          <Typography variant="body1">{businessInfo.description}</Typography>
-        </Grid>
-      </Grid>
-    </Box>
-  );
-
-  const renderPainPoints = (painPoints) => {
-    if (!painPoints || painPoints.length === 0) {
-      return (
-        <Typography variant="body1" color="text.secondary">
-          No pain points identified.
-        </Typography>
-      );
-    }
-    return (
-      <Box>
-        {painPoints.map((point, index) => (
-          <Fade in timeout={500} key={index}>
-            <Accordion
-              defaultExpanded
-              sx={{
-                mb: 2,
-                backgroundColor: alpha("#FFFFFF", 0.1),
-                "&:last-child": {
-                  mb: 0,
-                },
-                "& .MuiAccordionSummary-root": {
-                  // minHeight: "48px",
-                },
-                "& .MuiAccordionSummary-content": {
-                  margin: "8px 0",
-                },
-              }}
-            >
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
-                sx={{
-                  "& .MuiAccordionSummary-content": {
-                    margin: "8px 0",
-                  },
-                }}
+      <Typography
+        variant="caption"
+        sx={{ color: "text.secondary", fontWeight: 500, mr: 0.5 }}
+      >
+        Case Studies:
+      </Typography>
+      {normalizedLinks.map(
+        (link, idx) =>
+          link && (
+            <Tooltip key={idx} title={`View case study ${idx + 1}`}>
+              <a
+                href={link}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`Open case study ${idx + 1} in new tab`}
+                style={{ textDecoration: "none" }}
               >
-                <Typography
-                  variant="h6"
-                  color="text.secondary"
+                <Box
                   sx={{
-                    fontWeight: 600,
-                    fontSize: { xs: "0.95rem", sm: "1.25rem" },
-                    display: "flex",
+                    display: "inline-flex",
                     alignItems: "center",
-                    gap: 1,
+                    justifyContent: "center",
+                    width: 22,
+                    height: 22,
+                    borderRadius: "6px",
+                    background: "rgba(120,120,120,0.18)",
+                    color: "text.primary",
+                    fontWeight: 600,
+                    fontSize: "0.95rem",
+                    transition: "background 0.2s",
+                    cursor: "pointer",
+                    "&:hover": { background: "rgba(64,156,255,0.25)" },
                   }}
                 >
-                  <Chip
-                    label={index + 1}
-                    size="small"
-                    color="text.secondary"
-                    sx={{
-                      mr: 1,
-                      minWidth: "28px",
-                      height: "28px",
-                      borderRadius: "8px",
-                    }}
-                  />
-                  {point.pain_point}
-                </Typography>
-              </AccordionSummary>
-              <AccordionDetails sx={{ pt: 0 }}>
-                <Box sx={{ mb: 1.5 }}>
-                  <Typography
-                    variant="subtitle1"
-                    color="primary"
-                    gutterBottom
-                    sx={{
-                      fontWeight: 500,
-                      fontSize: { xs: "1rem", sm: "1.1rem" },
-                      mb: 1,
-                    }}
-                  >
-                    Automation Suggestion
-                  </Typography>
+                  {idx + 1}
+                </Box>
+              </a>
+            </Tooltip>
+          )
+      )}
+    </Box>
+  );
+};
+
+const ResponseComponent = ({ responseData, onNext }) => {
+  const handleBookMeeting = () => {
+    // Navigate to the next step (Step 6 - Schedule Consultation)
+    if (onNext) {
+      onNext();
+    }
+  };
+
+  const renderBusinessInfo = (businessInfo, painPoints) => (
+    <Box sx={{ width: "100%" }}>
+      {/* Business Description with Industry and Team Size */}
+      <StyledCard fadeTimeout={900}>
+        {/* Industry and Team Size Info */}
+        <Box sx={{ mb: 2 }}>
+          <Box sx={{ display: "flex", gap: 3, mb: 2, flexWrap: "wrap" }}>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+              <FactoryIcon sx={{ color: "primary.main", fontSize: "1.2rem" }} />
+              <Typography
+                variant="body2"
+                sx={{ color: "text.secondary", fontWeight: 500 }}
+              >
+                Industry:
+              </Typography>
+              <Typography
+                variant="body2"
+                sx={{
+                  color: "text.primary",
+                  fontWeight: 600,
+                  textTransform: "capitalize",
+                }}
+              >
+                {businessInfo.industry}
+              </Typography>
+            </Box>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+              <GroupIcon sx={{ color: "primary.main", fontSize: "1.2rem" }} />
+              <Typography
+                variant="body2"
+                sx={{ color: "text.secondary", fontWeight: 500 }}
+              >
+                Team Size:
+              </Typography>
+              <Typography
+                variant="body2"
+                sx={{ color: "text.primary", fontWeight: 600 }}
+              >
+                {businessInfo.employee_count}
+              </Typography>
+            </Box>
+          </Box>
+        </Box>
+
+        <Typography variant="body1" sx={{ ...textStyles, lineHeight: 1.7 }}>
+          {businessInfo.description}
+        </Typography>
+      </StyledCard>
+
+      {/* Pain Points Section */}
+      {painPoints && painPoints.length > 0 && (
+        <Box sx={{ mt: 3 }}>
+          <Box sx={sectionHeaderStyles}>
+            <BoltIcon sx={iconStyles} />
+            <Typography variant="h5" sx={titleStyles}>
+              Automation Opportunities
+            </Typography>
+          </Box>
+
+          <Grid container spacing={{ xs: 1, sm: 1.5 }}>
+            {painPoints.map((point, index) => (
+              <Grid item xs={12} key={index}>
+                <StyledCard fadeTimeout={500 + index * 200}>
                   <Typography
                     variant="body1"
-                    paragraph
                     sx={{
-                      color: "text.primary",
-                      lineHeight: 1.6,
-                      fontSize: { xs: "0.9rem", sm: "1rem" },
+                      ...textStyles,
+                      mb: 1.5,
+                      fontWeight: 500,
+                      display: "inline",
                     }}
                   >
                     {point.automation_suggestion}
+                    {/* Case Studies */}
+                    <CaseStudyChips links={point.case_study?.link} />
                   </Typography>
-                </Box>
-                {point.refined_custom_call_action && (
-                  <AnimatedBorderBox>
-                    <Typography
-                      variant="subtitle1"
-                      color="primary"
-                      gutterBottom
+
+                  {point.refined_custom_call_action && (
+                    <Box
                       sx={{
-                        fontWeight: 500,
-                        fontSize: { xs: "1rem", sm: "1.1rem" },
-                        mb: 1,
-                        display: "flex",
-                        alignItems: "center",
+                        mt: 1.5,
+                        p: { xs: 1, sm: 1.5 },
+                        borderRadius: 2,
+                        background:
+                          "linear-gradient(135deg, rgba(64, 156, 255, 0.1) 0%, rgba(88, 86, 214, 0.1) 100%)",
+                        border: "1px solid rgba(64, 156, 255, 0.2)",
+                        position: "relative",
+                        "&::before": {
+                          content: '""',
+                          position: "absolute",
+                          top: 0,
+                          left: 0,
+                          right: 0,
+                          height: "2px",
+                          background:
+                            "linear-gradient(90deg, #409CFF, #5856D6)",
+                        },
                       }}
                     >
-                      <AnimatedIcon
-                        Icon={BoltIcon}
-                        gradientColors={{
-                          primary: "rgba(64, 156, 255, 0.8)",
-                          secondary: "rgba(88, 86, 214, 0.7)",
-                          tertiary: "rgba(138, 43, 226, 0.6)",
-                        }}
-                      />
-                      Recommended Action
-                    </Typography>
-                    <Typography
-                      variant="body1"
-                      sx={{
-                        color: "text.primary",
-                        lineHeight: 1.6,
-                        fontSize: { xs: "0.9rem", sm: "1rem" },
-                      }}
-                    >
-                      {point.refined_custom_call_action}
-                    </Typography>
-                  </AnimatedBorderBox>
-                )}
-              </AccordionDetails>
-            </Accordion>
-          </Fade>
-        ))}
-      </Box>
-    );
-  };
+                      <Box
+                        sx={{ display: "flex", alignItems: "center", mb: 1 }}
+                      >
+                        <BoltIcon
+                          sx={{
+                            color: "primary.main",
+                            mr: 1,
+                            fontSize: "1.2rem",
+                          }}
+                        />
+                        <Typography
+                          variant="subtitle1"
+                          sx={{
+                            color: "primary.main",
+                            fontWeight: 600,
+                            fontSize: themeStyles.subtitleFontSize,
+                          }}
+                        >
+                          Recommended Action
+                        </Typography>
+                      </Box>
+                      <Typography
+                        variant="body1"
+                        sx={{ ...textStyles, fontWeight: 500, pl: 2.2 }}
+                      >
+                        {point.refined_custom_call_action}
+                      </Typography>
+                    </Box>
+                  )}
+                </StyledCard>
+              </Grid>
+            ))}
+          </Grid>
+        </Box>
+      )}
+    </Box>
+  );
 
   const renderCustomTasks = (customTasks) => {
     if (!customTasks || customTasks.length === 0) {
       return (
-        <Typography variant="body1" color="text.secondary">
-          No custom tasks identified.
-        </Typography>
+        <StyledCard>
+          <Typography
+            variant="body1"
+            color="text.secondary"
+            sx={{ fontSize: themeStyles.bodyFontSize, textAlign: "center" }}
+          >
+            No custom tasks identified.
+          </Typography>
+        </StyledCard>
       );
     }
+
     if (typeof customTasks === "string") {
-      return <Typography variant="body2">{customTasks}</Typography>;
-    }
-    return customTasks.map((task, index) => (
-      <Fade in timeout={500} key={index}>
-        <Accordion
-          defaultExpanded
-          sx={{
-            mb: 2,
-            backgroundColor: alpha("#FFFFFF", 0.1),
-            "&:last-child": {
-              mb: 0,
-            },
-            "& .MuiAccordionSummary-root": {
-              // minHeight: "48px",
-            },
-            "& .MuiAccordionSummary-content": {
-              margin: "8px 0",
-            },
-          }}
-        >
-          <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
-            sx={{
-              "& .MuiAccordionSummary-content": {
-                margin: "8px 0",
-              },
-            }}
+      return (
+        <StyledCard>
+          <Typography
+            variant="body2"
+            sx={{ fontSize: themeStyles.bodyFontSize }}
           >
-            <Typography
-              variant="h6"
-              color="text.secondary"
-              sx={{
-                fontWeight: 600,
-                fontSize: { xs: "0.95rem", sm: "1.25rem" },
-                display: "flex",
-                alignItems: "center",
-                gap: 1,
-              }}
-            >
-              <Chip
-                label={index + 1}
-                size="small"
-                color="text.secondary"
-                sx={{
-                  mr: 1,
-                  minWidth: "28px",
-                  height: "28px",
-                  borderRadius: "8px",
-                }}
-              />
-              {task.task}
-            </Typography>
-          </AccordionSummary>
-          <AccordionDetails sx={{ pt: 0 }}>
-            <Typography
-              variant="body1"
-              color="text.secondary"
-              paragraph
-              sx={{
-                lineHeight: 1.6,
-                mb: 1.5,
-                fontSize: { xs: "0.9rem", sm: "1rem" },
-              }}
-            >
-              {task.description}
-            </Typography>
-            <Box sx={{ mb: 1.5 }}>
-              <Typography
-                variant="subtitle1"
-                color="primary"
-                gutterBottom
-                sx={{
-                  fontWeight: 500,
-                  fontSize: { xs: "1rem", sm: "1.1rem" },
-                  mb: 1,
-                }}
-              >
-                Automation Suggestion
-              </Typography>
-              <Typography
-                variant="body1"
-                paragraph
-                sx={{
-                  color: "text.primary",
-                  lineHeight: 1.6,
-                  fontSize: { xs: "0.9rem", sm: "1rem" },
-                }}
-              >
-                {task.automation_suggestion}
-              </Typography>
-            </Box>
-            {task.refined_custom_call_action && (
-              <AnimatedBorderBox>
-                <Typography
-                  variant="subtitle1"
-                  color="primary"
-                  gutterBottom
+            {customTasks}
+          </Typography>
+        </StyledCard>
+      );
+    }
+
+    return (
+      <Grid container spacing={{ xs: 1, sm: 1.5 }}>
+        {customTasks.map((task, index) => (
+          <Grid item xs={12} key={index}>
+            <StyledCard fadeTimeout={500 + index * 200}>
+              {/* Task Header */}
+              <Box sx={{ display: "flex", alignItems: "center", mb: 1.5 }}>
+                <Box
                   sx={{
-                    fontWeight: 500,
-                    fontSize: { xs: "1rem", sm: "1.1rem" },
-                    mb: 1,
+                    width: 32,
+                    height: 32,
+                    borderRadius: "50%",
+                    background: "linear-gradient(135deg, #409CFF, #5856D6)",
                     display: "flex",
                     alignItems: "center",
+                    justifyContent: "center",
+                    mr: 1.5,
+                    color: "white",
+                    fontWeight: 700,
+                    fontSize: "0.9rem",
                   }}
                 >
-                  <AnimatedIcon
-                    Icon={BoltIcon}
-                    gradientColors={{
-                      primary: "rgba(64, 156, 255, 0.8)",
-                      secondary: "rgba(88, 86, 214, 0.7)",
-                      tertiary: "rgba(138, 43, 226, 0.6)",
-                    }}
-                  />
-                  Recommended Action
+                  {index + 1}
+                </Box>
+                <Typography
+                  variant="h6"
+                  sx={{
+                    color: "primary.main",
+                    fontWeight: 700,
+                    fontSize: themeStyles.titleFontSize,
+                    flex: 1,
+                  }}
+                >
+                  {task.task}
                 </Typography>
+              </Box>
+
+              {/* Task Description */}
+              <Box sx={{ pl: 0, mb: 1.5 }}>
+                <Typography
+                  variant="body1"
+                  color="text.secondary"
+                  sx={{ ...textStyles }}
+                >
+                  {task.description}
+                </Typography>
+              </Box>
+
+              {/* Automation Suggestion */}
+              <Box sx={{ pl: 0, mb: 1.5 }}>
                 <Typography
                   variant="body1"
                   sx={{
-                    color: "text.primary",
-                    lineHeight: 1.6,
-                    fontSize: { xs: "0.9rem", sm: "1rem" },
-                  }}
-                >
-                  {task.refined_custom_call_action}
-                </Typography>
-              </AnimatedBorderBox>
-            )}
-            {task.total_savings && (
-              <Box sx={{ mt: 2 }}>
-                <Typography
-                  variant="subtitle1"
-                  color="primary"
-                  gutterBottom
-                  sx={{
+                    ...textStyles,
                     fontWeight: 500,
-                    fontSize: { xs: "1rem", sm: "1.1rem" },
-                    mb: 1,
+                    // pl: 2.2,
+                    display: "inline",
                   }}
                 >
-                  Potential Monthly Savings
+                  {task.automation_suggestion}
+                  {/* Case Studies */}
+                  <CaseStudyChips links={task.case_study?.link} />
                 </Typography>
-                <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}>
-                  <Chip
-                    icon={<ScheduleIcon />}
-                    label={`${task.total_savings.time_saved} Hours Saved`}
-                    size="small"
-                    color="primary"
-                    variant="outlined"
-                    sx={{
-                      borderRadius: "16px",
-                      borderWidth: "2px",
-                      fontSize: { xs: "0.8rem", sm: "0.875rem" },
-                    }}
-                  />
-                  <Chip
-                    icon={<AttachMoneyIcon />}
-                    label={`$${task.total_savings.savings} Cost Saved`}
-                    size="small"
-                    color="primary"
-                    variant="outlined"
-                    sx={{
-                      borderRadius: "16px",
-                      borderWidth: "2px",
-                      fontSize: { xs: "0.8rem", sm: "0.875rem" },
-                    }}
-                  />
-                </Box>
               </Box>
-            )}
-          </AccordionDetails>
-        </Accordion>
-      </Fade>
-    ));
+
+              {/* Recommended Action */}
+              {task.refined_custom_call_action && (
+                <Box sx={{ pl: 0, mb: 1.5 }}>
+                  <Box
+                    sx={{
+                      p: { xs: 1, sm: 1.5 },
+                      borderRadius: 2,
+                      background:
+                        "linear-gradient(135deg, rgba(64, 156, 255, 0.1) 0%, rgba(88, 86, 214, 0.1) 100%)",
+                      border: "1px solid rgba(64, 156, 255, 0.2)",
+                      position: "relative",
+                      "&::before": {
+                        content: '""',
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        height: "2px",
+                        background: "linear-gradient(90deg, #409CFF, #5856D6)",
+                      },
+                    }}
+                  >
+                    <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
+                      <BoltIcon
+                        sx={{
+                          color: "primary.main",
+                          mr: 1,
+                          fontSize: "1.2rem",
+                        }}
+                      />
+                      <Typography
+                        variant="subtitle1"
+                        sx={{
+                          color: "primary.main",
+                          fontWeight: 600,
+                          fontSize: themeStyles.subtitleFontSize,
+                        }}
+                      >
+                        Recommended Action
+                      </Typography>
+                    </Box>
+                    <Typography
+                      variant="body1"
+                      sx={{ ...textStyles, fontWeight: 500, pl: 0 }}
+                    >
+                      {task.refined_custom_call_action}
+                    </Typography>
+                  </Box>
+                </Box>
+              )}
+
+              {/* Potential Savings */}
+              {task.total_savings && (
+                <Box sx={{ pl: 0 }}>
+                  <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
+                    <AttachMoneyIcon
+                      sx={{ color: "primary.main", mr: 1, fontSize: "1.2rem" }}
+                    />
+                    <Typography
+                      variant="subtitle1"
+                      sx={{
+                        color: "primary.main",
+                        fontWeight: 600,
+                        fontSize: themeStyles.subtitleFontSize,
+                      }}
+                    >
+                      Potential Monthly Savings
+                    </Typography>
+                  </Box>
+                  <Box
+                    sx={{ display: "flex", gap: 1, flexWrap: "wrap", pl: 0 }}
+                  >
+                    <Chip
+                      icon={<ScheduleIcon />}
+                      label={`${task.total_savings.time_saved} Hours Saved`}
+                      size="small"
+                      sx={{
+                        ...themeStyles.chipStyle,
+                        background:
+                          "linear-gradient(135deg, rgba(64, 156, 255, 0.1) 0%, rgba(88, 86, 214, 0.1) 100%)",
+                        border: "1px solid rgba(64, 156, 255, 0.3)",
+                        color: "primary.main",
+                      }}
+                    />
+                    <Chip
+                      icon={<AttachMoneyIcon />}
+                      label={`$${task.total_savings.savings} Cost Saved`}
+                      size="small"
+                      sx={{
+                        ...themeStyles.chipStyle,
+                        background:
+                          "linear-gradient(135deg, rgba(138, 43, 226, 0.1) 0%, rgba(88, 86, 214, 0.1) 100%)",
+                        border: "1px solid rgba(138, 43, 226, 0.3)",
+                        color: "primary.main",
+                      }}
+                    />
+                  </Box>
+                </Box>
+              )}
+            </StyledCard>
+          </Grid>
+        ))}
+      </Grid>
+    );
   };
 
   const renderTotalSavings = (totalSavings) => {
     if (!totalSavings) return null;
     return (
-      <Fade in timeout={500}>
-        <Box sx={{ mt: 4, mb: 2, maxWidth: "600px", mx: "auto" }}>
-          <AnimatedBorderBox
-            gradientColors={{
-              primary: "rgba(64, 156, 255, 0.3)",
-              secondary: "rgba(88, 86, 214, 0.25)",
-              tertiary: "rgba(138, 43, 226, 0.2)",
-            }}
-            borderThickness={3}
-            sx={{ p: 4 }}
-          >
-            <Typography
-              variant="h5"
-              color="primary"
-              gutterBottom
-              sx={{
-                fontWeight: 700,
-                fontSize: "1.5rem",
-                mb: 3,
-                textAlign: "center",
-              }}
-            >
-              Total Potential Savings (Monthly)
-            </Typography>
+      <Box
+        sx={{
+          mt: 3,
+          mb: 1.5,
+          maxWidth: { xs: "100%", sm: "500px" },
+          mx: "auto",
+        }}
+      >
+        <StyledCard fadeTimeout={500}>
+          <Box sx={{ textAlign: "center", mb: 2 }}>
             <Box
               sx={{
                 display: "flex",
-                gap: 4,
-                flexWrap: "wrap",
+                alignItems: "center",
                 justifyContent: "center",
+                mb: 1,
               }}
             >
-              <Chip
-                icon={<ScheduleIcon />}
-                label={`${totalSavings.time_saved} Hours Saved`}
-                size="medium"
-                sx={{
-                  borderRadius: "24px",
-                  backgroundColor: "white",
-                  color: "primary.main",
-                  border: "2px solid",
-                  borderColor: "primary.main",
-                  fontSize: "1.1rem",
-                  fontWeight: 600,
-                  height: "48px",
-                  px: 2,
-                  "& .MuiChip-icon": {
-                    color: "primary.main",
-                    fontSize: "1.5rem",
-                  },
-                }}
+              <AttachMoneyIcon
+                sx={{ color: "primary.main", mr: 1, fontSize: "1.5rem" }}
               />
-              <Chip
-                icon={<AttachMoneyIcon />}
-                label={`${totalSavings.savings} Cost Saved`}
-                size="medium"
+              <Typography
+                variant="h6"
                 sx={{
-                  borderRadius: "24px",
-                  backgroundColor: "white",
                   color: "primary.main",
-                  border: "2px solid",
-                  borderColor: "primary.main",
-                  fontSize: "1.1rem",
-                  fontWeight: 600,
-                  height: "48px",
-                  px: 2,
-                  "& .MuiChip-icon": {
-                    color: "primary.main",
-                    fontSize: "1.5rem",
-                  },
+                  fontWeight: 700,
+                  fontSize: { xs: "1.1rem", sm: "1.3rem" },
                 }}
-              />
+              >
+                Total Monthly Savings
+              </Typography>
             </Box>
-          </AnimatedBorderBox>
-        </Box>
-      </Fade>
+          </Box>
+
+          {/* Metrics Row */}
+          <Box
+            sx={{
+              display: "flex",
+              gap: { xs: 1, sm: 2 },
+              flexWrap: "nowrap",
+              justifyContent: "center",
+              flexDirection: { xs: "row", sm: "row" },
+            }}
+          >
+            {/* Time Savings */}
+            <Box
+              sx={{
+                p: { xs: 1, sm: 2 },
+                borderRadius: 2,
+                background:
+                  "linear-gradient(135deg, rgba(64, 156, 255, 0.12) 0%, rgba(88, 86, 214, 0.12) 100%)",
+                border: "1px solid rgba(64, 156, 255, 0.25)",
+                display: "flex",
+                alignItems: "center",
+                gap: { xs: 1, sm: 1.5 },
+                minWidth: { xs: "120px", sm: "180px" },
+                flex: 1,
+              }}
+            >
+              <Box
+                sx={{
+                  width: { xs: 28, sm: 36 },
+                  height: { xs: 28, sm: 36 },
+                  borderRadius: "50%",
+                  background: "linear-gradient(135deg, #409CFF, #5856D6)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  boxShadow: "0 2px 8px rgba(64, 156, 255, 0.3)",
+                  flexShrink: 0,
+                }}
+              >
+                <ScheduleIcon
+                  sx={{
+                    color: "white",
+                    fontSize: { xs: "1rem", sm: "1.2rem" },
+                  }}
+                />
+              </Box>
+              <Box sx={{ minWidth: 0, flex: 1 }}>
+                <Typography
+                  variant="h5"
+                  sx={{
+                    color: "primary.main",
+                    fontWeight: 700,
+                    fontSize: { xs: "1.1rem", sm: "1.5rem" },
+                    lineHeight: 1,
+                    mb: 0.5,
+                  }}
+                >
+                  {totalSavings.time_saved}
+                </Typography>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: "text.secondary",
+                    fontSize: { xs: "0.65rem", sm: "0.8rem" },
+                    fontWeight: 500,
+                    textTransform: "uppercase",
+                    letterSpacing: "0.3px",
+                  }}
+                >
+                  Hours Saved
+                </Typography>
+              </Box>
+            </Box>
+
+            {/* Cost Savings */}
+            <Box
+              sx={{
+                p: { xs: 1, sm: 2 },
+                borderRadius: 2,
+                background:
+                  "linear-gradient(135deg, rgba(138, 43, 226, 0.12) 0%, rgba(88, 86, 214, 0.12) 100%)",
+                border: "1px solid rgba(138, 43, 226, 0.25)",
+                display: "flex",
+                alignItems: "center",
+                gap: { xs: 1, sm: 1.5 },
+                minWidth: { xs: "120px", sm: "180px" },
+                flex: 1,
+              }}
+            >
+              <Box
+                sx={{
+                  width: { xs: 28, sm: 36 },
+                  height: { xs: 28, sm: 36 },
+                  borderRadius: "50%",
+                  background: "linear-gradient(135deg, #8A2BE2, #5856D6)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  boxShadow: "0 2px 8px rgba(138, 43, 226, 0.3)",
+                  flexShrink: 0,
+                }}
+              >
+                <AttachMoneyIcon
+                  sx={{
+                    color: "white",
+                    fontSize: { xs: "1rem", sm: "1.2rem" },
+                  }}
+                />
+              </Box>
+              <Box sx={{ minWidth: 0, flex: 1 }}>
+                <Typography
+                  variant="h5"
+                  sx={{
+                    color: "primary.main",
+                    fontWeight: 700,
+                    fontSize: { xs: "1.1rem", sm: "1.5rem" },
+                    lineHeight: 1,
+                    mb: 0.5,
+                  }}
+                >
+                  ${totalSavings.savings}
+                </Typography>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: "text.secondary",
+                    fontSize: { xs: "0.65rem", sm: "0.8rem" },
+                    fontWeight: 500,
+                    textTransform: "uppercase",
+                    letterSpacing: "0.3px",
+                  }}
+                >
+                  Cost Saved
+                </Typography>
+              </Box>
+            </Box>
+          </Box>
+
+          {/* Footer Note */}
+          <Box
+            sx={{
+              textAlign: "center",
+              mt: 2,
+              pt: 1.5,
+              borderTop: "1px solid rgba(255, 255, 255, 0.1)",
+            }}
+          >
+            <Typography
+              variant="body2"
+              sx={{
+                color: "text.secondary",
+                fontSize: { xs: "0.75rem", sm: "0.8rem" },
+                fontWeight: 500,
+                opacity: 0.7,
+              }}
+            >
+              💡 Based on your automation opportunities
+            </Typography>
+          </Box>
+        </StyledCard>
+      </Box>
     );
   };
 
   if (!responseData) return null;
 
   return (
-    <Box
-      sx={{
-        p: 2,
-        minHeight: "100vh",
-      }}
-    >
-      <Grid container spacing={3}>
-        <StyledSection
-          title="Business Information"
-          tooltip="Details about your business"
-          icon={BusinessIcon}
-        >
-          {renderBusinessInfo(responseData.data.business_info)}
-        </StyledSection>
-
-        <StyledSection
-          title="Pain Points Analysis"
-          tooltip="Analysis of your business challenges"
-        >
-          {renderPainPoints(responseData.data.pain_points_analysis)}
+    <Box sx={{ p: themeStyles.sectionPadding, minHeight: "100vh" }}>
+      {responseData.data.custom_tasks_analysis &&
+        responseData.data.custom_tasks_analysis.length > 0 &&
+        responseData.data.total_savings &&
+        renderTotalSavings(responseData.data.total_savings)}
+      <Grid container spacing={2}>
+        <StyledSection title="Business Information" icon={BusinessIcon}>
+          {renderBusinessInfo(
+            responseData.data.business_info,
+            responseData.data.pain_points_analysis
+          )}
         </StyledSection>
 
         {responseData.data.custom_tasks_analysis &&
           responseData.data.custom_tasks_analysis.length > 0 && (
-            <StyledSection
-              title="Custom Tasks Analysis"
-              tooltip="Analysis of specific tasks you want to automate"
-            >
+            <StyledSection title="Custom Tasks Analysis" icon={GroupIcon}>
               {renderCustomTasks(responseData.data.custom_tasks_analysis)}
             </StyledSection>
           )}
-
-        {responseData.data.custom_tasks_analysis &&
-          responseData.data.custom_tasks_analysis.length > 0 &&
-          responseData.data.total_savings &&
-          renderTotalSavings(responseData.data.total_savings)}
       </Grid>
+
+      {/* Call to Action Section */}
+      <Box sx={{ mt: 4, textAlign: "center" }}>
+        <Fade in timeout={1000}>
+          <Box
+            sx={{
+              p: { xs: 3, sm: 4 },
+              borderRadius: 4,
+              background:
+                "linear-gradient(135deg, rgba(64, 156, 255, 0.15) 0%, rgba(138, 43, 226, 0.15) 100%)",
+              border: "2px solid rgba(64, 156, 255, 0.3)",
+              position: "relative",
+              overflow: "hidden",
+              "&::before": {
+                content: '""',
+                position: "absolute",
+                top: 0,
+                left: 0,
+                right: 0,
+                height: "3px",
+                background: "linear-gradient(90deg, #409CFF, #8A2BE2)",
+              },
+            }}
+          >
+            <Typography
+              variant="h4"
+              sx={{
+                color: "primary.main",
+                fontWeight: 700,
+                fontSize: { xs: "1.5rem", sm: "2rem" },
+                mb: 2,
+              }}
+            >
+              Ready to Automate Your Business?
+            </Typography>
+            <Typography
+              variant="body1"
+              sx={{
+                color: "text.secondary",
+                fontSize: { xs: "1rem", sm: "1.1rem" },
+                mb: 3,
+                maxWidth: "600px",
+                mx: "auto",
+                lineHeight: 1.6,
+              }}
+            >
+              Let's discuss how we can implement these automation solutions and
+              start saving you time and money today.
+            </Typography>
+            <Button
+              variant="contained"
+              size="large"
+              onClick={handleBookMeeting}
+              sx={{
+                background: "linear-gradient(135deg, #409CFF 0%, #8A2BE2 100%)",
+                color: "white",
+                px: { xs: 3, sm: 6 },
+                py: { xs: 1.5, sm: 2 },
+                fontSize: { xs: "0.9rem", sm: "1.1rem" },
+                fontWeight: 700,
+                borderRadius: 3,
+                textTransform: "none",
+                whiteSpace: "nowrap",
+                boxShadow: "0 4px 20px rgba(64, 156, 255, 0.4)",
+                transition: "all 0.3s ease",
+                "&:hover": {
+                  background:
+                    "linear-gradient(135deg, #357ABD 0%, #7B1FA2 100%)",
+                  boxShadow: "0 6px 25px rgba(64, 156, 255, 0.6)",
+                  transform: "translateY(-2px)",
+                },
+                "&:active": {
+                  transform: "translateY(0)",
+                },
+              }}
+            >
+              📅 Book Your Free Consultation
+            </Button>
+            <Typography
+              variant="body2"
+              sx={{
+                color: "text.secondary",
+                mt: 2,
+                opacity: 0.8,
+                fontSize: { xs: "0.8rem", sm: "0.9rem" },
+              }}
+            >
+              ⏱️ 30-minute session • No commitment required
+            </Typography>
+          </Box>
+        </Fade>
+      </Box>
     </Box>
   );
 };

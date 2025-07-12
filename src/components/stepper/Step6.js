@@ -35,14 +35,15 @@ Email: ${formData.step2?.email || "Not provided"}`,
       },
       {
         title: "Market Analysis",
-        content: `Business Description: ${formData.step3?.description || "Not provided"}
+        content: `Business Description: ${
+          formData.step3?.description || "Not provided"
+        }
 Employee Count: ${formData.step3?.employeeCount || "Not provided"}
-Pain Points: ${formData.step3?.painPoints?.join(", ") || "Not provided"}
 Current Tech Stack: ${formData.step3?.currentStack || "Not provided"}
 Tools Used: ${formData.step3?.tools?.join(", ") || "Not provided"}`,
       },
       {
-        title: "Growth Strategy",
+        title: "Custom Tasks",
         content:
           formData.step4?.tasks
             ?.map(
@@ -55,6 +56,62 @@ Daily Hours: ${task.dailyHours || "0"}`
             .join("\n\n") || "No tasks provided",
       },
     ];
+
+    // Add LLM Analysis Data if available
+    if (formData.step5?.responseData?.data) {
+      const llmData = formData.step5.responseData.data;
+
+      // Add unique LLM data directly
+      if (
+        llmData.pain_points_analysis &&
+        llmData.pain_points_analysis.length > 0
+      ) {
+        const painPointsContent = llmData.pain_points_analysis
+          .map(
+            (point, index) => `
+Opportunity ${index + 1}:
+Pain Point: ${point.pain_point || "Not provided"}\n
+Automation Suggestion: ${point.automation_suggestion || "Not provided"}\n
+Recommended Action: ${point.refined_custom_call_action || "Not provided"}`
+          )
+          .join("\n\n");
+
+        sections.push({
+          title: "Identified Automation Opportunities",
+          content: painPointsContent,
+        });
+      }
+
+      if (
+        llmData.custom_tasks_analysis &&
+        llmData.custom_tasks_analysis.length > 0
+      ) {
+        const customTasksContent = llmData.custom_tasks_analysis
+          .map(
+            (task, index) => `
+Task ${index + 1}: ${task.task || "Not provided"}\n
+Description: ${task.description || "Not provided"}\n
+Automation Suggestion: ${task.automation_suggestion || "Not provided"}\n
+Recommended Action: ${task.refined_custom_call_action || "Not provided"}\n
+Time Saved: ${task.total_savings?.time_saved || "N/A"} hours
+Cost Saved: $${task.total_savings?.savings || "N/A"}`
+          )
+          .join("\n\n");
+
+        sections.push({
+          title: "Detailed Task Analysis",
+          content: customTasksContent,
+        });
+      }
+
+      if (llmData.total_savings) {
+        sections.push({
+          title: "Projected Monthly Savings",
+          content: `Time Saved: ${llmData.total_savings.time_saved || "0"} hours
+Cost Saved: $${llmData.total_savings.savings || "0"}`,
+        });
+      }
+    }
 
     return sections
       .map((section) => `=== ${section.title} ===\n${section.content}`)
@@ -111,11 +168,13 @@ Daily Hours: ${task.dailyHours || "0"}`
 
   return (
     <Box>
- <Typography
+      <Typography
         variant={isMobile ? "h6" : "h5"}
         gutterBottom
         sx={{ mb: 1, textAlign: "center" }}
-      >        Schedule Your Consultation
+      >
+        {" "}
+        Schedule Your Consultation
       </Typography>
 
       {isScheduled && showCustomConfirmation ? (

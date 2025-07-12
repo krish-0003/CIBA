@@ -37,12 +37,7 @@ const Step3 = () => {
   const [businessState, setBusinessState] = useState({
     description: formData.step3?.description || "",
     employeeCount: formData.step3?.employeeCount || null,
-    painPoints: formData.step3?.painPoints || [""],
-    softwareInteractions: formData.step3?.softwareInteractions || "",
-    isBlurred: {
-      description: false,
-      painPoints: false,
-    },
+    isBlurred: false,
   });
 
   const [techStackState, setTechStackState] = useState({
@@ -62,15 +57,13 @@ const Step3 = () => {
 
   // Update form context whenever states change
   useEffect(() => {
-    const isBusinessValid =
-      businessState.description.trim() !== "" &&
-      businessState.painPoints.some((point) => point.trim() !== "");
-
+    const isBusinessValid = businessState.description.trim() !== "";
     updateFormData("step3", {
-      ...businessState,
-      ...techStackState,
+      description: businessState.description,
+      employeeCount: businessState.employeeCount,
       isValid: isBusinessValid,
       isComplete: isBusinessValid,
+      ...techStackState,
     });
   }, [businessState, techStackState]);
 
@@ -81,27 +74,18 @@ const Step3 = () => {
     }));
   };
 
-  const handlePainPointChange = (index) => (e) => {
-    const newPainPoints = [...businessState.painPoints];
-    newPainPoints[index] = e.target.value;
+  const handleBlur = (field) => () => {
     setBusinessState((prev) => ({
       ...prev,
-      painPoints: newPainPoints,
+      isBlurred: true,
     }));
   };
 
-  const addPainPoint = () => {
-    setBusinessState((prev) => ({
-      ...prev,
-      painPoints: [...prev.painPoints, ""],
-    }));
-  };
-
-  const removePainPoint = (index) => () => {
-    setBusinessState((prev) => ({
-      ...prev,
-      painPoints: prev.painPoints.filter((_, i) => i !== index),
-    }));
+  const getDescriptionError = () => {
+    if (businessState.isBlurred && !businessState.description.trim()) {
+      return "Please answer all the required questions";
+    }
+    return "";
   };
 
   const handleToolsChange = (event, newValue) => {
@@ -109,37 +93,6 @@ const Step3 = () => {
       ...prev,
       tools: newValue,
     }));
-  };
-
-  const handleBlur = (field) => () => {
-    setBusinessState((prev) => ({
-      ...prev,
-      isBlurred: {
-        ...prev.isBlurred,
-        [field]: true,
-      },
-    }));
-  };
-
-  // Error messages
-  const getDescriptionError = () => {
-    if (
-      businessState.isBlurred.description &&
-      !businessState.description.trim()
-    ) {
-      return "Please describe your business";
-    }
-    return "";
-  };
-
-  const getPainPointsError = () => {
-    if (
-      businessState.isBlurred.painPoints &&
-      !businessState.painPoints.some((point) => point.trim())
-    ) {
-      return "Please add at least one business challenge";
-    }
-    return "";
   };
 
   return (
@@ -154,7 +107,7 @@ const Step3 = () => {
       </Typography>
 
       <Grid container spacing={{ xs: 0, sm: 0 }}>
-        {/* Business Description Section */}
+        {/* Combined Business Questions Section */}
         <Grid item xs={12}>
           <Box elevation={0}>
             <Typography
@@ -169,104 +122,52 @@ const Step3 = () => {
             </Typography>
             <Grid container spacing={2}>
               <Grid size={{ xs: 12, md: 12 }}>
-                <FormLabel required>What does your business do?</FormLabel>
+                <FormLabel required>
+                  Briefly describe your business, the main challenges you face,
+                  and where your team uses software in daily operations.
+                </FormLabel>
                 <TextField
                   required
                   fullWidth
                   multiline
-                  minRows={2}
-                  maxRows={6}
+                  minRows={7}
+                  maxRows={12}
                   value={businessState.description}
                   onChange={handleBusinessChange("description")}
                   onBlur={handleBlur("description")}
                   size={isMobile ? "small" : "medium"}
-                  placeholder="e.g., We are a manufacturing company that produces automotive parts..."
+                  placeholder={
+                    `Example: ` +
+                    `We run a small business selling products online. Our main challenge is keeping track of orders and inventory. Our team uses spreadsheets and email to manage daily tasks.`
+                  }
                   error={!!getDescriptionError()}
                   helperText={getDescriptionError()}
                 />
               </Grid>
-              <Grid size={{ xs: 12, md: 6 }}>
-                <FormLabel>
-                  How many employees work in your organization?
-                </FormLabel>
-                <FormControl fullWidth size={isMobile ? "small" : "medium"}>
-                  <Select
-                    value={businessState.employeeCount}
-                    onChange={handleBusinessChange("employeeCount")}
-                    displayEmpty
-                    placeholder="Select employee range"
-                  >
-                    <MenuItem value="" disabled>
-                      Select employee range
-                    </MenuItem>
-                    {employeeRanges.map((range) => (
-                      <MenuItem key={range.value} value={range.value}>
-                        {range.label}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </Grid>
-
-              {/* Second row - full width */}
-              <Grid size={{ xs: 12, md: 12 }}>
-                <FormLabel required>
-                  What are your main business challenges?
-                </FormLabel>
-                {businessState.painPoints.map((point, index) => (
-                  <Box key={index} sx={{ display: "flex", gap: 1, mb: 1 }}>
-                    <TextField
-                      required
-                      fullWidth
-                      placeholder={`Challenge ${
-                        index + 1
-                      }: e.g., Manual data entry is time-consuming...`}
-                      value={point}
-                      onChange={handlePainPointChange(index)}
-                      onBlur={handleBlur("painPoints")}
-                      size={isMobile ? "small" : "medium"}
-                      error={!!getPainPointsError()}
-                      helperText={index === 0 ? getPainPointsError() : ""}
-                    />
-                    {index > 0 && (
-                      <IconButton
-                        onClick={removePainPoint(index)}
-                        color="error"
-                        size={isMobile ? "small" : "medium"}
-                      >
-                        <DeleteOutlineIcon />
-                      </IconButton>
-                    )}
-                  </Box>
-                ))}
-                <Button
-                  startIcon={<AddCircleOutlineIcon />}
-                  onClick={addPainPoint}
-                  sx={{ mt: 1 }}
-                >
-                  Add Another Challenge
-                </Button>
-              </Grid>
-
-              {/* Third row - full width */}
-              <Grid size={{ xs: 12, md: 12 }}>
-                <FormLabel>
-                  Where do your employees interact with software?
-                </FormLabel>
-                <TextField
-                  fullWidth
-                  multiline
-                  minRows={2}
-                  maxRows={6}
-                  value={businessState.softwareInteractions}
-                  onChange={handleBusinessChange("softwareInteractions")}
-                  onBlur={handleBlur("softwareInteractions")}
-                  size={isMobile ? "small" : "medium"}
-                  placeholder="e.g., Customer service team uses CRM, Sales team uses ERP..."
-                />
-              </Grid>
             </Grid>
           </Box>
+        </Grid>
+
+        {/* Employee Count Section */}
+        <Grid size={{ xs: 12, md: 6 }} sx={{ my: 2 }}>
+          <FormLabel>How many employees work in your organization?</FormLabel>
+          <FormControl fullWidth size={isMobile ? "small" : "medium"}>
+            <Select
+              value={businessState.employeeCount}
+              onChange={handleBusinessChange("employeeCount")}
+              displayEmpty
+              placeholder="Select employee range"
+            >
+              <MenuItem value="" disabled>
+                Select employee range
+              </MenuItem>
+              {employeeRanges.map((range) => (
+                <MenuItem key={range.value} value={range.value}>
+                  {range.label}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
         </Grid>
 
         {/* Tech Stack Section - All full width */}

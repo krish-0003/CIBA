@@ -15,10 +15,10 @@ import { FormLabel } from "../../utils/formComponents";
 const industryOptions = [
   { display: "Law", value: "LAW" },
   { display: "Healthcare", value: "HEALTHCARE" },
-  { display: "Real Estate", value: "REAL_ESTATE" },
+  { display: "Real Estate", value: "REALESTATE" },
   { display: "Accounting", value: "ACCOUNTING" },
-  { display: "Human Resources", value: "HR" },
-  { display: "Industrial", value: "INDUSTRIAL" },
+  { display: "Human Resources", value: "HUMANRESOURCE" },
+  // { display: "Industrial", value: "INDUSTRIAL" },
   { display: "Insurance", value: "INSURANCE" },
   { display: "Logistics and Transportation", value: "LOGISTICS" },
   { display: "Manufacturing", value: "MANUFACTURING" },

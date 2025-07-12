@@ -29,8 +29,8 @@ import Step6 from "../components/stepper/Step6";
 
 const steps = [
   "Welcome",
-  "Information",
   "Contact",
+  "Information",
   "Business Overview",
   "Automation",
   "Review",
@@ -80,7 +80,7 @@ const StepperContent = () => {
 
   const getDisplayStepNumber = (actualStep) => {
     if (actualStep === 0) return 0; // Welcome
-    if (actualStep === 1 || actualStep === 2) return 1; // Information and Contact merged
+    if (actualStep === 1 || actualStep === 2) return 1; // Contact and Information merged
     if (actualStep === 3) return 2; // Business Overview
     if (actualStep === 4 && formData.step3?.hasSpecificTasks) return 2; // Automation (only if has specific tasks)
     if (actualStep === 5) return 3; // Review
@@ -117,9 +117,9 @@ const StepperContent = () => {
       case 0:
         return true; // Welcome step is always valid
       case 1:
-        return formData.step1?.isValid || false;
-      case 2:
         return formData.step2?.isValid || false;
+      case 2:
+        return formData.step1?.isValid || false;
       case 3:
         return formData.step3?.isValid || false;
       case 4:
@@ -138,15 +138,15 @@ const StepperContent = () => {
       case 0:
         return <Step0 onNext={handleNext} />;
       case 1:
-        return <Step1 />;
-      case 2:
         return <Step2 />;
+      case 2:
+        return <Step1 />;
       case 3:
         return <Step3 />;
       case 4:
         return <Step4 />;
       case 5:
-        return <Step5 />;
+        return <Step5 onNext={handleNext} />;
       case 6:
         return <Step6 />;
       default:
@@ -219,6 +219,9 @@ const StepperContent = () => {
               mb: 4,
               "& .MuiStepLabel-label": {
                 fontSize: "0.875rem",
+              },
+              "& .Mui-completed .MuiStepIcon-root": {
+                color: (theme) => theme.palette.success.main,
               },
             }}
           >
@@ -312,32 +315,34 @@ const StepperContent = () => {
                 </Box>
               )}
               {getStepContent(activeStep)}
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  mt: 3,
-                  pt: 2,
-                  borderTop: 1,
-                  borderColor: "divider",
-                }}
-              >
-                <Button
-                  disabled={activeStep === 0}
-                  onClick={handleBack}
-                  startIcon={<ArrowBackIcon />}
+              {activeStep !== 0 && (
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    mt: 3,
+                    pt: 2,
+                    borderTop: 1,
+                    borderColor: "divider",
+                  }}
                 >
-                  Back
-                </Button>
-                <Button
-                  variant="contained"
-                  onClick={handleNext}
-                  endIcon={<ArrowForwardIcon />}
-                  disabled={!isStepValid(activeStep)}
-                >
-                  {activeStep === steps.length - 1 ? "Finish" : "Next"}
-                </Button>
-              </Box>
+                  <Button
+                    disabled={activeStep === 0}
+                    onClick={handleBack}
+                    startIcon={<ArrowBackIcon />}
+                  >
+                    Back
+                  </Button>
+                  <Button
+                    variant="contained"
+                    onClick={handleNext}
+                    endIcon={<ArrowForwardIcon />}
+                    disabled={!isStepValid(activeStep)}
+                  >
+                    {activeStep === steps.length - 1 ? "Finish" : "Next"}
+                  </Button>
+                </Box>
+              )}
             </>
           )}
         </Box>

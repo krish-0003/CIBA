@@ -7,7 +7,7 @@ import ErrorComponent from "../ErrorComponent";
 import ResponseComponent from "../ResponseComponent";
 import LoaderComponent from "../LoaderComponent";
 
-const Step5 = () => {
+const Step5 = ({ onNext }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const { formData, updateFormData } = useFormContext();
@@ -76,23 +76,7 @@ const Step5 = () => {
       ) : error ? (
         <ErrorComponent error={error} onRetry={handleSubmit} />
       ) : (
-        <ResponseComponent responseData={responseData} />
-      )}
-
-      {!error && (
-        <Typography
-          variant="body2"
-          color="text.secondary"
-          align="center"
-          sx={{
-            mt: 3,
-            fontSize: { xs: "0.75rem", sm: "0.875rem" },
-            px: { xs: 2, sm: 0 },
-          }}
-        >
-          By clicking next, you can book an appointment with us to discuss more
-          about this in detail.
-        </Typography>
+        <ResponseComponent responseData={responseData} onNext={onNext} />
       )}
     </Box>
   );

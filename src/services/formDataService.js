@@ -21,8 +21,6 @@ export const formatFormData = (formData) => {
       industry: formData.step1?.industry || null,
       description: formData.step3?.description || null,
       employeeCount: formData.step3?.employeeCount || null,
-      painPoints: formData.step3?.painPoints || [],
-      softwareInteractions: formData.step3?.softwareInteractions || null,
       tools: formData.step3?.tools || [],
       hasSpecificTasks: formData.step3?.hasSpecificTasks ?? false,
     },
