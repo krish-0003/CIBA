@@ -141,6 +141,9 @@ const HTMLContent = ({ content, variant = "body1", sx = {} }) => {
         "& strong": {
           fontWeight: 700,
           color: "primary.main",
+          textDecoration: "underline",
+          textDecorationColor: "primary.main",
+
         },
         "& b": {
           fontWeight: 700,
