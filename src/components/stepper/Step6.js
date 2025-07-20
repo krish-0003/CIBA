@@ -62,19 +62,10 @@ Daily Hours: ${task.dailyHours || "0"}`
       const llmData = formData.step5.responseData.data;
 
       // Add unique LLM data directly
-      if (
-        llmData.pain_points_analysis &&
-        llmData.pain_points_analysis.length > 0
-      ) {
-        const painPointsContent = llmData.pain_points_analysis
-          .map(
-            (point, index) => `
-Opportunity ${index + 1}:
-Pain Point: ${point.pain_point || "Not provided"}\n
-Automation Suggestion: ${point.automation_suggestion || "Not provided"}\n
-Recommended Action: ${point.refined_custom_call_action || "Not provided"}`
-          )
-          .join("\n\n");
+      if (llmData.pain_points_analysis) {
+        const painPoint = llmData.pain_points_analysis;
+        const painPointsContent = `
+Automation Opportunities: ${painPoint.automation_suggestion || "Not provided"}`;
 
         sections.push({
           title: "Identified Automation Opportunities",
