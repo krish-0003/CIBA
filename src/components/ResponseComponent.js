@@ -116,31 +116,103 @@ const StyledCard = ({ children, fadeTimeout = 500 }) => (
 );
 
 /**
- * Reusable info card component
+ * HTML Content Wrapper Component
+ * Safely renders HTML content with proper styling
  */
-const InfoCard = ({ icon: Icon, title, content, fadeTimeout = 500 }) => (
-  <StyledCard fadeTimeout={fadeTimeout}>
-    <Box sx={{ display: "flex", alignItems: "center", mb: 1.5 }}>
-      <Icon sx={{ color: "primary.main", mr: 1, fontSize: "1.5rem" }} />
-      <Typography
-        variant="h6"
-        sx={{
+const HTMLContent = ({ content, variant = "body1", sx = {} }) => {
+  if (!content) return null;
+
+  // Check if content contains HTML tags
+  const hasHTML = /<[^>]*>/g.test(content);
+
+  if (!hasHTML) {
+    return (
+      <Typography variant={variant} sx={sx}>
+        {content}
+      </Typography>
+    );
+  }
+
+  // Create a wrapper that renders HTML content
+  return (
+    <Box
+      sx={{
+        ...sx,
+        "& strong": {
+          fontWeight: 700,
+          color: "primary.main",
+        },
+        "& b": {
+          fontWeight: 700,
+          color: "primary.main",
+        },
+        "& em": {
+          fontStyle: "italic",
+          color: "text.secondary",
+        },
+        "& i": {
+          fontStyle: "italic",
+          color: "text.secondary",
+        },
+        "& u": {
+          textDecoration: "underline",
+          textDecorationColor: "primary.main",
+        },
+        "& mark": {
+          backgroundColor: "rgba(64, 156, 255, 0.2)",
+          color: "text.primary",
+          padding: "0 2px",
+          borderRadius: "2px",
+        },
+        "& code": {
+          backgroundColor: "rgba(0, 0, 0, 0.1)",
+          color: "primary.main",
+          padding: "2px 4px",
+          borderRadius: "3px",
+          fontFamily: "monospace",
+          fontSize: "0.9em",
+        },
+        "& a": {
+          color: "primary.main",
+          textDecoration: "none",
+          fontWeight: 500,
+          "&:hover": {
+            textDecoration: "underline",
+          },
+        },
+        "& ul, & ol": {
+          pl: 2,
+          mb: 1,
+        },
+        "& li": {
+          mb: 0.5,
+        },
+        "& h1, & h2, & h3, & h4, & h5, & h6": {
           color: "primary.main",
           fontWeight: 700,
-          fontSize: themeStyles.titleFontSize,
-        }}
-      >
-        {title}
-      </Typography>
-    </Box>
-    <Typography
-      variant="body1"
-      sx={{ ...textStyles, fontWeight: 500, pl: 2.5 }}
-    >
-      {content}
-    </Typography>
-  </StyledCard>
-);
+          mb: 1,
+          mt: 2,
+        },
+        "& blockquote": {
+          borderLeft: "3px solid",
+          borderColor: "primary.main",
+          pl: 2,
+          ml: 0,
+          my: 1,
+          fontStyle: "italic",
+          color: "text.secondary",
+        },
+        "& hr": {
+          border: "none",
+          height: "1px",
+          backgroundColor: "rgba(255, 255, 255, 0.1)",
+          my: 2,
+        },
+      }}
+      dangerouslySetInnerHTML={{ __html: content }}
+    />
+  );
+};
 
 // Utility function to normalize links to an array
 const getCaseStudyLinks = (link) => {
@@ -216,7 +288,98 @@ const ResponseComponent = ({ responseData, onNext }) => {
     }
   };
 
-  const renderBusinessInfo = (businessInfo, painPoints) => (
+  const renderPainPoints = (painPoints, sectionTitle) => {
+    if (!painPoints) {
+      return null;
+    }
+
+    // Handle single object case
+    const pointsArray = Array.isArray(painPoints) ? painPoints : [painPoints];
+
+    if (pointsArray.length === 0) {
+      return null;
+    }
+
+    return (
+      <Box sx={{ mt: 3 }}>
+        <Box sx={sectionHeaderStyles}>
+          <BoltIcon sx={iconStyles} />
+          <Typography variant="h5" sx={titleStyles}>
+            {sectionTitle}
+          </Typography>
+        </Box>
+
+        <Grid container spacing={{ xs: 1, sm: 1.5 }}>
+          {pointsArray.map((point, index) => (
+            <Grid item xs={12} key={index}>
+              <StyledCard fadeTimeout={500 + index * 200}>
+                <HTMLContent
+                  content={point.automation_suggestion}
+                  sx={{
+                    ...textStyles,
+                    mb: 1.5,
+                    fontWeight: 500,
+                    display: "inline",
+                  }}
+                />
+                {/* Case Studies */}
+                <CaseStudyChips links={point.case_study?.link} />
+
+                {point.refined_custom_call_action && (
+                  <Box
+                    sx={{
+                      mt: 1.5,
+                      p: { xs: 1, sm: 1.5 },
+                      borderRadius: 2,
+                      background:
+                        "linear-gradient(135deg, rgba(64, 156, 255, 0.1) 0%, rgba(88, 86, 214, 0.1) 100%)",
+                      border: "1px solid rgba(64, 156, 255, 0.2)",
+                      position: "relative",
+                      "&::before": {
+                        content: '""',
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        height: "2px",
+                        background: "linear-gradient(90deg, #409CFF, #5856D6)",
+                      },
+                    }}
+                  >
+                    <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
+                      <BoltIcon
+                        sx={{
+                          color: "primary.main",
+                          mr: 1,
+                          fontSize: "1.2rem",
+                        }}
+                      />
+                      <Typography
+                        variant="subtitle1"
+                        sx={{
+                          color: "primary.main",
+                          fontWeight: 600,
+                          fontSize: themeStyles.subtitleFontSize,
+                        }}
+                      >
+                        Recommended Action
+                      </Typography>
+                    </Box>
+                    <HTMLContent
+                      content={point.refined_custom_call_action}
+                      sx={{ ...textStyles, fontWeight: 500, pl: 2.2 }}
+                    />
+                  </Box>
+                )}
+              </StyledCard>
+            </Grid>
+          ))}
+        </Grid>
+      </Box>
+    );
+  };
+
+  const renderBusinessInfo = (businessInfo) => (
     <Box sx={{ width: "100%" }}>
       {/* Business Description with Industry and Team Size */}
       <StyledCard fadeTimeout={900}>
@@ -260,96 +423,11 @@ const ResponseComponent = ({ responseData, onNext }) => {
           </Box>
         </Box>
 
-        <Typography variant="body1" sx={{ ...textStyles, lineHeight: 1.7 }}>
-          {businessInfo.description}
-        </Typography>
+        <HTMLContent
+          content={businessInfo.description}
+          sx={{ ...textStyles, lineHeight: 1.7 }}
+        />
       </StyledCard>
-
-      {/* Pain Points Section */}
-      {painPoints && painPoints.length > 0 && (
-        <Box sx={{ mt: 3 }}>
-          <Box sx={sectionHeaderStyles}>
-            <BoltIcon sx={iconStyles} />
-            <Typography variant="h5" sx={titleStyles}>
-              Automation Opportunities
-            </Typography>
-          </Box>
-
-          <Grid container spacing={{ xs: 1, sm: 1.5 }}>
-            {painPoints.map((point, index) => (
-              <Grid item xs={12} key={index}>
-                <StyledCard fadeTimeout={500 + index * 200}>
-                  <Typography
-                    variant="body1"
-                    sx={{
-                      ...textStyles,
-                      mb: 1.5,
-                      fontWeight: 500,
-                      display: "inline",
-                    }}
-                  >
-                    {point.automation_suggestion}
-                    {/* Case Studies */}
-                    <CaseStudyChips links={point.case_study?.link} />
-                  </Typography>
-
-                  {point.refined_custom_call_action && (
-                    <Box
-                      sx={{
-                        mt: 1.5,
-                        p: { xs: 1, sm: 1.5 },
-                        borderRadius: 2,
-                        background:
-                          "linear-gradient(135deg, rgba(64, 156, 255, 0.1) 0%, rgba(88, 86, 214, 0.1) 100%)",
-                        border: "1px solid rgba(64, 156, 255, 0.2)",
-                        position: "relative",
-                        "&::before": {
-                          content: '""',
-                          position: "absolute",
-                          top: 0,
-                          left: 0,
-                          right: 0,
-                          height: "2px",
-                          background:
-                            "linear-gradient(90deg, #409CFF, #5856D6)",
-                        },
-                      }}
-                    >
-                      <Box
-                        sx={{ display: "flex", alignItems: "center", mb: 1 }}
-                      >
-                        <BoltIcon
-                          sx={{
-                            color: "primary.main",
-                            mr: 1,
-                            fontSize: "1.2rem",
-                          }}
-                        />
-                        <Typography
-                          variant="subtitle1"
-                          sx={{
-                            color: "primary.main",
-                            fontWeight: 600,
-                            fontSize: themeStyles.subtitleFontSize,
-                          }}
-                        >
-                          Recommended Action
-                        </Typography>
-                      </Box>
-                      <Typography
-                        variant="body1"
-                        sx={{ ...textStyles, fontWeight: 500, pl: 2.2 }}
-                      >
-                        {point.refined_custom_call_action}
-                      </Typography>
-                    </Box>
-                  )}
-                </StyledCard>
-              </Grid>
-            ))}
-          </Grid>
-        </Box>
-      )}
     </Box>
   );
 
@@ -420,30 +498,25 @@ const ResponseComponent = ({ responseData, onNext }) => {
 
               {/* Task Description */}
               <Box sx={{ pl: 0, mb: 1.5 }}>
-                <Typography
-                  variant="body1"
-                  color="text.secondary"
-                  sx={{ ...textStyles }}
-                >
-                  {task.description}
-                </Typography>
+                <HTMLContent
+                  content={task.description}
+                  sx={{ ...textStyles, color: "text.secondary" }}
+                />
               </Box>
 
               {/* Automation Suggestion */}
               <Box sx={{ pl: 0, mb: 1.5 }}>
-                <Typography
-                  variant="body1"
+                <HTMLContent
+                  content={task.automation_suggestion}
                   sx={{
                     ...textStyles,
                     fontWeight: 500,
                     // pl: 2.2,
                     display: "inline",
                   }}
-                >
-                  {task.automation_suggestion}
-                  {/* Case Studies */}
-                  <CaseStudyChips links={task.case_study?.link} />
-                </Typography>
+                />
+                {/* Case Studies */}
+                <CaseStudyChips links={task.case_study?.link} />
               </Box>
 
               {/* Recommended Action */}
@@ -487,64 +560,72 @@ const ResponseComponent = ({ responseData, onNext }) => {
                         Recommended Action
                       </Typography>
                     </Box>
-                    <Typography
-                      variant="body1"
+                    <HTMLContent
+                      content={task.refined_custom_call_action}
                       sx={{ ...textStyles, fontWeight: 500, pl: 0 }}
-                    >
-                      {task.refined_custom_call_action}
-                    </Typography>
+                    />
                   </Box>
                 </Box>
               )}
 
               {/* Potential Savings */}
-              {task.total_savings && (
-                <Box sx={{ pl: 0 }}>
-                  <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
-                    <AttachMoneyIcon
-                      sx={{ color: "primary.main", mr: 1, fontSize: "1.2rem" }}
-                    />
-                    <Typography
-                      variant="subtitle1"
-                      sx={{
-                        color: "primary.main",
-                        fontWeight: 600,
-                        fontSize: themeStyles.subtitleFontSize,
-                      }}
+              {task.total_savings &&
+                task.total_savings.savings > 0 &&
+                task.total_savings.time_saved > 0 && (
+                  <Box sx={{ pl: 0 }}>
+                    <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
+                      <AttachMoneyIcon
+                        sx={{
+                          color: "primary.main",
+                          mr: 1,
+                          fontSize: "1.2rem",
+                        }}
+                      />
+                      <Typography
+                        variant="subtitle1"
+                        sx={{
+                          color: "primary.main",
+                          fontWeight: 600,
+                          fontSize: themeStyles.subtitleFontSize,
+                        }}
+                      >
+                        Potential Monthly Savings
+                      </Typography>
+                    </Box>
+                    <Box
+                      sx={{ display: "flex", gap: 1, flexWrap: "wrap", pl: 0 }}
                     >
-                      Potential Monthly Savings
-                    </Typography>
+                      {task.total_savings.time_saved > 0 && (
+                        <Chip
+                          icon={<ScheduleIcon />}
+                          label={`${task.total_savings.time_saved} Hours Saved`}
+                          size="small"
+                          sx={{
+                            ...themeStyles.chipStyle,
+                            background:
+                              "linear-gradient(135deg, rgba(64, 156, 255, 0.1) 0%, rgba(88, 86, 214, 0.1) 100%)",
+                            border: "1px solid rgba(64, 156, 255, 0.3)",
+                            color: "primary.main",
+                          }}
+                        />
+                      )}
+                      {task.total_savings.savings > 0 && (
+                        <Chip
+                          icon={<AttachMoneyIcon />}
+                          label={`$${task.total_savings.savings} Cost Saved`}
+                          size="small"
+                          sx={{
+                            ...themeStyles.chipStyle,
+                            background:
+                              "linear-gradient(135deg, rgba(138, 43, 226, 0.1) 0%, rgba(88, 86, 214, 0.1) 100%)",
+                            border: "1px solid rgba(138, 43, 226, 0.3)",
+                            color: "primary.main",
+                          }}
+                        />
+                      )}
+                    </Box>
                   </Box>
-                  <Box
-                    sx={{ display: "flex", gap: 1, flexWrap: "wrap", pl: 0 }}
-                  >
-                    <Chip
-                      icon={<ScheduleIcon />}
-                      label={`${task.total_savings.time_saved} Hours Saved`}
-                      size="small"
-                      sx={{
-                        ...themeStyles.chipStyle,
-                        background:
-                          "linear-gradient(135deg, rgba(64, 156, 255, 0.1) 0%, rgba(88, 86, 214, 0.1) 100%)",
-                        border: "1px solid rgba(64, 156, 255, 0.3)",
-                        color: "primary.main",
-                      }}
-                    />
-                    <Chip
-                      icon={<AttachMoneyIcon />}
-                      label={`$${task.total_savings.savings} Cost Saved`}
-                      size="small"
-                      sx={{
-                        ...themeStyles.chipStyle,
-                        background:
-                          "linear-gradient(135deg, rgba(138, 43, 226, 0.1) 0%, rgba(88, 86, 214, 0.1) 100%)",
-                        border: "1px solid rgba(138, 43, 226, 0.3)",
-                        color: "primary.main",
-                      }}
-                    />
-                  </Box>
-                </Box>
-              )}
+                )}
             </StyledCard>
           </Grid>
         ))}
@@ -759,13 +840,12 @@ const ResponseComponent = ({ responseData, onNext }) => {
       {responseData.data.custom_tasks_analysis &&
         responseData.data.custom_tasks_analysis.length > 0 &&
         responseData.data.total_savings &&
+        responseData.data.total_savings.time_saved > 0 &&
+        responseData.data.total_savings.savings > 0 &&
         renderTotalSavings(responseData.data.total_savings)}
       <Grid container spacing={2}>
         <StyledSection title="Business Information" icon={BusinessIcon}>
-          {renderBusinessInfo(
-            responseData.data.business_info,
-            responseData.data.pain_points_analysis
-          )}
+          {renderBusinessInfo(responseData.data.business_info)}
         </StyledSection>
 
         {responseData.data.custom_tasks_analysis &&
@@ -773,6 +853,15 @@ const ResponseComponent = ({ responseData, onNext }) => {
             <StyledSection title="Custom Tasks Analysis" icon={GroupIcon}>
               {renderCustomTasks(responseData.data.custom_tasks_analysis)}
             </StyledSection>
+          )}
+
+        {responseData.data.pain_points_analysis &&
+          renderPainPoints(
+            responseData.data.pain_points_analysis,
+            responseData.data.custom_tasks_analysis &&
+              responseData.data.custom_tasks_analysis.length > 0
+              ? "Extra Suggestions"
+              : "Automation Opportunities"
           )}
       </Grid>
 
@@ -810,8 +899,8 @@ const ResponseComponent = ({ responseData, onNext }) => {
             >
               Ready to Automate Your Business?
             </Typography>
-            <Typography
-              variant="body1"
+            <HTMLContent
+              content="Let's discuss how we can implement these automation solutions and start saving you time and money today."
               sx={{
                 color: "text.secondary",
                 fontSize: { xs: "1rem", sm: "1.1rem" },
@@ -819,11 +908,9 @@ const ResponseComponent = ({ responseData, onNext }) => {
                 maxWidth: "600px",
                 mx: "auto",
                 lineHeight: 1.6,
+                textAlign: "center",
               }}
-            >
-              Let's discuss how we can implement these automation solutions and
-              start saving you time and money today.
-            </Typography>
+            />
             <Button
               variant="contained"
               size="large"
