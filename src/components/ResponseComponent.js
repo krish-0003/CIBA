@@ -138,16 +138,46 @@ const HTMLContent = ({ content, variant = "body1", sx = {} }) => {
     <Box
       sx={{
         ...sx,
+        "@keyframes rainbow-shift": {
+          "0%, 100%": {
+            backgroundPosition: "0% 50%",
+          },
+          "50%": {
+            backgroundPosition: "100% 50%",
+          },
+        },
         "& strong": {
           fontWeight: 700,
           color: "primary.main",
           textDecoration: "underline",
           textDecorationColor: "primary.main",
-
         },
         "& b": {
           fontWeight: 700,
           color: "primary.main",
+          background:
+            "linear-gradient(90deg, rgba(64, 156, 255, 0.9), rgba(88, 86, 214, 0.9), rgba(138, 43, 226, 0.9))",
+          backgroundSize: "200% 100%",
+          backgroundClip: "text",
+          WebkitBackgroundClip: "text",
+          WebkitTextFillColor: "transparent",
+          animation: "rainbow-shift 3s ease-in-out infinite",
+          position: "relative",
+          display: "inline-block",
+          "&::after": {
+            content: '""',
+            position: "absolute",
+            bottom: "-2px",
+            left: 0,
+            right: 0,
+            height: "3px",
+            background:
+              "linear-gradient(90deg, rgba(64, 156, 255, 0.8), rgba(88, 86, 214, 0.8), rgba(138, 43, 226, 0.8))",
+            backgroundSize: "200% 100%",
+            animation: "rainbow-shift 3s ease-in-out infinite",
+            borderRadius: "2px",
+            zIndex: 1,
+          },
         },
         "& em": {
           fontStyle: "italic",
