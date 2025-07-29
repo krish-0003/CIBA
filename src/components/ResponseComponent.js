@@ -257,7 +257,16 @@ const getCaseStudyLinks = (link) => {
 // Reusable component for rendering case study chips
 const CaseStudyChips = ({ links }) => {
   const normalizedLinks = getCaseStudyLinks(links);
-  if (normalizedLinks.length === 0) return null;
+  // Filter out invalid URLs (strings that don't start with http/https)
+  const validLinks = normalizedLinks.filter(
+    (link) =>
+      typeof link === "string" 
+      &&
+      link !== "No Case Study Provided"
+  );
+
+  if (validLinks.length === 0) return null;
+
   return (
     <Box
       component="span"
@@ -275,7 +284,7 @@ const CaseStudyChips = ({ links }) => {
       >
         Case Studies:
       </Typography>
-      {normalizedLinks.map(
+      {validLinks.map(
         (link, idx) =>
           link && (
             <Tooltip key={idx} title={`View case study ${idx + 1}`}>
