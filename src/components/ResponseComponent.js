@@ -19,6 +19,7 @@ import BusinessIcon from "@mui/icons-material/Business";
 import ScheduleIcon from "@mui/icons-material/Schedule";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import BoltIcon from "@mui/icons-material/Bolt";
+import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import { themeStyles } from "../config/theme";
 import FactoryIcon from "@mui/icons-material/Factory";
 import GroupIcon from "@mui/icons-material/Group";
@@ -259,10 +260,7 @@ const CaseStudyChips = ({ links }) => {
   const normalizedLinks = getCaseStudyLinks(links);
   // Filter out invalid URLs (strings that don't start with http/https)
   const validLinks = normalizedLinks.filter(
-    (link) =>
-      typeof link === "string" 
-      &&
-      link !== "No Case Study Provided"
+    (link) => typeof link === "string" && link !== "No Case Study Provided"
   );
 
   if (validLinks.length === 0) return null;
@@ -300,19 +298,27 @@ const CaseStudyChips = ({ links }) => {
                     display: "inline-flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    width: 22,
-                    height: 22,
                     borderRadius: "6px",
                     background: "rgba(120,120,120,0.18)",
                     color: "text.primary",
                     fontWeight: 600,
-                    fontSize: "0.95rem",
+                    fontSize: { xs: "0.8rem", sm: "0.95rem" },
                     transition: "background 0.2s",
                     cursor: "pointer",
                     "&:hover": { background: "rgba(64,156,255,0.25)" },
+                    gap: { xs: 0.4, sm: 0.6 },
+                    px: { xs: 0.3, sm: 0.6 },
+                    py: { xs: 0.1, sm: 0.1 },
                   }}
                 >
                   {idx + 1}
+                  <OpenInNewIcon
+                    sx={{
+                      fontSize: { xs: "0.8rem", sm: "0.95rem" },
+                      color: "primary.main",
+                      opacity: 0.8,
+                    }}
+                  />
                 </Box>
               </a>
             </Tooltip>
@@ -365,7 +371,7 @@ const ResponseComponent = ({ responseData, onNext }) => {
                   }}
                 />
                 {/* Case Studies */}
-                <CaseStudyChips links={point.case_study?.link} />
+                <CaseStudyChips links={point?.case_study_links} />
 
                 {point.refined_custom_call_action && (
                   <Box
