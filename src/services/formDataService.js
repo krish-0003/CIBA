@@ -21,20 +21,30 @@ export const formatFormData = (formData) => {
       industry: formData.step1?.industry || null,
       description: formData.step3?.description || null,
       employeeCount: formData.step3?.employeeCount || null,
-      tools: formData.step3?.tools || [],
       hasSpecificTasks: formData.step3?.hasSpecificTasks ?? false,
+      tools: formData.step3?.tools || [],
     },
   };
 
-  // Only include automation tasks if user has specific tasks
-  if (formData.step3?.hasSpecificTasks) {
-    formattedData.automationTasks =
-      formData.step4?.tasks?.map((task) => ({
+  // Include automation tasks if any are provided (only non-empty tasks)
+  if (Array.isArray(formData.step4?.tasks) && formData.step4.tasks.length > 0) {
+    // Filter out tasks that don't have both title and description
+    const validTasks = formData.step4.tasks.filter(
+      (task) =>
+        task.title &&
+        task.title.trim() !== "" &&
+        task.description &&
+        task.description.trim() !== ""
+    );
+
+    if (validTasks.length > 0) {
+      formattedData.automationTasks = validTasks.map((task) => ({
         title: task.title || null,
         description: task.description || null,
         hourlyCost: task.hourlyCost || null,
         dailyHours: task.dailyHours || null,
-      })) || [];
+      }));
+    }
   }
 
   return formattedData;

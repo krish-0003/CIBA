@@ -51,61 +51,25 @@ const StepperContent = () => {
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const { formData } = useFormContext();
 
-  const shareStateWithBackend = async () => {
-    try {
-      // Get the formatted data from Step5 component
-      const formattedData = formData.step5?.formattedData;
-      if (!formattedData) {
-        throw new Error("No formatted data available");
-      }
-
-      const response = await fetch("/api/submit-form", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formattedData),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to submit form data");
-      }
-
-      const result = await response.json();
-      console.log("Form data submitted successfully:", result);
-    } catch (error) {
-      console.error("Error submitting form data:", error);
-    }
-  };
+  // This function is no longer needed since data is submitted in Step5
+  // const shareStateWithBackend = async () => { ... };
 
   const getDisplayStepNumber = (actualStep) => {
     if (actualStep === 0) return 0; // Welcome
     if (actualStep === 1 || actualStep === 2) return 1; // Contact and Information merged
     if (actualStep === 3) return 2; // Business Overview
-    if (actualStep === 4 && formData.step3?.hasSpecificTasks) return 2; // Automation (only if has specific tasks)
+    if (actualStep === 4) return 2; // Automation is part of Business & Automation
     if (actualStep === 5) return 3; // Review
     if (actualStep === 6) return 3; // Schedule Consultation (hidden)
     return 0;
   };
 
   const handleNext = () => {
-    setActiveStep((prevActiveStep) => {
-      // If we're on step 3 (Business Overview) and user is not curious about AI
-      if (prevActiveStep === 3 && !formData.step3?.hasSpecificTasks) {
-        return 5; // Skip to review step
-      }
-      return prevActiveStep + 1;
-    });
+    setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
 
   const handleBack = () => {
-    setActiveStep((prevActiveStep) => {
-      // If we're on review step (5) and user was not curious about AI
-      if (prevActiveStep === 5 && !formData.step3?.hasSpecificTasks) {
-        return 3; // Go back to business overview
-      }
-      return prevActiveStep - 1;
-    });
+    setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
 
   const handleReset = () => {
@@ -125,7 +89,8 @@ const StepperContent = () => {
       case 4:
         return formData.step4?.isValid || false;
       case 5:
-        return formData.step5?.isValid || false;
+        // Step5 is only valid when it's completed and not loading
+        return (formData.step5?.isValid && !formData.step5?.isLoading) || false;
       case 6:
         return formData.step6?.isValid || false;
       default:
@@ -254,20 +219,14 @@ const StepperContent = () => {
               <Typography sx={{ mt: 2, mb: 1 }}>
                 All steps completed - you&apos;re finished
               </Typography>
+
               <Button
                 onClick={handleReset}
-                variant="contained"
-                sx={{ mt: 1, mr: 1 }}
-              >
-                Reset
-              </Button>
-              <Button
-                onClick={shareStateWithBackend}
                 variant="contained"
                 color="primary"
                 sx={{ mt: 1 }}
               >
-                Submit Form Data
+                Start Over
               </Button>
             </Box>
           ) : (
@@ -319,7 +278,10 @@ const StepperContent = () => {
                 <Box
                   sx={{
                     display: "flex",
+                    flexDirection: "row",
                     justifyContent: "space-between",
+                    alignItems: "center",
+                    gap: 2,
                     mt: 3,
                     pt: 2,
                     borderTop: 1,
@@ -330,16 +292,31 @@ const StepperContent = () => {
                     disabled={activeStep === 0}
                     onClick={handleBack}
                     startIcon={<ArrowBackIcon />}
+                    sx={{
+                      width: { xs: "20%", sm: "auto" },
+                      minWidth: { xs: "auto", sm: "auto" },
+                    }}
                   >
                     Back
                   </Button>
                   <Button
-                    variant="contained"
+                    variant={activeStep === 4 ? "outlined" : "contained"}
+                    color={activeStep === 4 ? "success" : "primary"}
                     onClick={handleNext}
                     endIcon={<ArrowForwardIcon />}
                     disabled={!isStepValid(activeStep)}
+                    sx={{
+                      width: { xs: "80%", sm: "auto" },
+                      minWidth: { xs: "auto", sm: "auto" },
+                    }}
                   >
-                    {activeStep === steps.length - 1 ? "Finish" : "Next"}
+                    {activeStep === steps.length - 1
+                      ? "Finish"
+                      : activeStep === 4
+                      ? "Can you give me suggestions?"
+                      : activeStep === 5 && formData.step5?.isLoading
+                      ? "Processing..."
+                      : "Next"}
                   </Button>
                 </Box>
               )}
