@@ -313,7 +313,15 @@ const StepperContent = () => {
                     {activeStep === steps.length - 1
                       ? "Finish"
                       : activeStep === 4
-                      ? "Can you give me suggestions?"
+                      ? formData.step4?.tasks &&
+                        formData.step4.tasks.length > 0 &&
+                        formData.step4.tasks.some(
+                          (task) =>
+                            task.title.trim() !== "" ||
+                            task.description.trim() !== ""
+                        )
+                        ? "Submit"
+                        : "Can you give me suggestions?"
                       : activeStep === 5 && formData.step5?.isLoading
                       ? "Processing..."
                       : "Next"}

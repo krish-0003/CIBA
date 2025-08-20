@@ -45,7 +45,7 @@ const Step4 = () => {
         dailyHours: "",
       };
       setTasks([defaultTask]);
-      setExpandedIndex(true);
+      setExpandedIndex(0);
     }
   }, []);
 
@@ -310,8 +310,12 @@ const Step4 = () => {
                   textAlign: "center",
                 }}
               >
-                💡 Click "Can you give me suggestions?" to discover automation
-                opportunities for your business{" "}
+                {tasks.some(
+                  (task) =>
+                    task.title.trim() !== "" || task.description.trim() !== ""
+                )
+                  ? "💡 Ready to submit? Click 'Submit' to proceed with your automation tasks."
+                  : "💡 Click 'Can you give me suggestions?' to discover automation opportunities for your business"}
               </Typography>
             )}
           </Box>
