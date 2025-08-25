@@ -6,9 +6,6 @@ import {
   Typography,
   FormControl,
   FormLabel as MuiFormLabel,
-  RadioGroup,
-  FormControlLabel,
-  Radio,
   useTheme,
   useMediaQuery,
   Paper,
@@ -37,12 +34,12 @@ const Step3 = () => {
   const [businessState, setBusinessState] = useState({
     description: formData.step3?.description || "",
     employeeCount: formData.step3?.employeeCount || null,
+    hasSpecificTasks: formData.step3?.hasSpecificTasks ?? false,
     isBlurred: false,
   });
 
   const [techStackState, setTechStackState] = useState({
     tools: formData.step3?.tools || [],
-    hasSpecificTasks: formData.step3?.hasSpecificTasks ?? true,
     isBlurred: false,
   });
 
@@ -61,6 +58,7 @@ const Step3 = () => {
     updateFormData("step3", {
       description: businessState.description,
       employeeCount: businessState.employeeCount,
+      hasSpecificTasks: businessState.hasSpecificTasks,
       isValid: isBusinessValid,
       isComplete: isBusinessValid,
       ...techStackState,
@@ -169,78 +167,50 @@ const Step3 = () => {
             </Select>
           </FormControl>
         </Grid>
-
-        {/* Tech Stack Section - All full width */}
-        <Grid item xs={12}>
-          <Box elevation={0}>
-            <Divider sx={{ my: 2 }} />
-            <Typography
-              variant="h6"
-              gutterBottom
-              sx={{ display: "flex", alignItems: "center", gap: 1 }}
-            >
-              Your Technology Environment
-              <Tooltip title="Understanding your tech stack helps us identify AI integration opportunities">
-                <InfoOutlinedIcon fontSize="small" color="action" />
-              </Tooltip>
-            </Typography>
-            <Grid container spacing={2}>
-              <Grid size={{ xs: 12, md: 6 }}>
-                <FormLabel>Select the tools your team uses daily</FormLabel>
-                <Autocomplete
-                  multiple
-                  freeSolo
-                  options={commonTools}
-                  value={techStackState.tools}
-                  onChange={handleToolsChange}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      placeholder="Start typing to search or select tools..."
+      </Grid>
+      {/* Tech Stack Section - All full width */}
+      <Grid item xs={12}>
+        <Box elevation={0}>
+          <Divider sx={{ my: 2 }} />
+          <Typography
+            variant="h6"
+            gutterBottom
+            sx={{ display: "flex", alignItems: "center", gap: 1 }}
+          >
+            Your Technology Environment
+            <Tooltip title="Understanding your tech stack helps us identify AI integration opportunities">
+              <InfoOutlinedIcon fontSize="small" color="action" />
+            </Tooltip>
+          </Typography>
+          <Grid container spacing={2}>
+            <Grid size={{ xs: 12, md: 6 }}>
+              <FormLabel>Select the tools your team uses daily</FormLabel>
+              <Autocomplete
+                multiple
+                freeSolo
+                options={commonTools}
+                value={techStackState.tools}
+                onChange={handleToolsChange}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    placeholder="Start typing to search or select tools..."
+                    size={isMobile ? "small" : "medium"}
+                  />
+                )}
+                renderTags={(value, getTagProps) =>
+                  value.map((option, index) => (
+                    <Chip
+                      label={option}
                       size={isMobile ? "small" : "medium"}
+                      {...getTagProps({ index })}
                     />
-                  )}
-                  renderTags={(value, getTagProps) =>
-                    value.map((option, index) => (
-                      <Chip
-                        label={option}
-                        size={isMobile ? "small" : "medium"}
-                        {...getTagProps({ index })}
-                      />
-                    ))
-                  }
-                />
-              </Grid>
-              <Grid size={{ xs: 12, md: 12 }}>
-                <Divider sx={{ my: 2 }} />
-                <Typography variant="subtitle1" gutterBottom>
-                  How do you feel about AI in your business?
-                </Typography>
-                <RadioGroup
-                  row={!isMobile}
-                  value={techStackState.hasSpecificTasks}
-                  onChange={(e) =>
-                    setTechStackState((prev) => ({
-                      ...prev,
-                      hasSpecificTasks: e.target.value === "true",
-                    }))
-                  }
-                >
-                  <FormControlLabel
-                    value={true}
-                    control={<Radio size={isMobile ? "small" : "medium"} />}
-                    label="I have specific tasks I'd like to automate"
-                  />
-                  <FormControlLabel
-                    value={false}
-                    control={<Radio size={isMobile ? "small" : "medium"} />}
-                    label="I'm not sure where AI could help"
-                  />
-                </RadioGroup>
-              </Grid>
+                  ))
+                }
+              />
             </Grid>
-          </Box>
-        </Grid>
+          </Grid>
+        </Box>
       </Grid>
     </Box>
   );
