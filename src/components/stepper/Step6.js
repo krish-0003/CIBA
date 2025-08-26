@@ -15,6 +15,7 @@ const Step6 = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const { formData, updateFormData } = useFormContext();
+  const calendlyUrl = process.env.REACT_APP_CALENDLY_URL;
 
   const [isScheduled, setIsScheduled] = useState(
     formData.step6?.isScheduled || false
@@ -173,7 +174,7 @@ Cost Saved: $${llmData.total_savings.savings || "0"}`,
       ) : (
         <Box sx={{ height: "650px" }}>
           <InlineWidget
-            url="https://calendly.com/topaccessories99/30min"
+            url={calendlyUrl}
             prefill={{
               email: formData.step2?.email || "",
               name: formData.step2?.name || "",
