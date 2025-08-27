@@ -25,6 +25,7 @@ const industryOptions = [
   { display: "Restaurant", value: "RESTAURANT" },
   { display: "Retail and E-commerce", value: "RETAIL" },
   { display: "Travel", value: "TRAVEL" },
+  { display: "Education", value: "EDUCATION" },
 ];
 
 const Step1 = () => {
